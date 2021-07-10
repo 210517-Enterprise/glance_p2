@@ -1,5 +1,8 @@
 package com.revature.repositories;
 
+//Project Includes
+import com.revature.models.*;
+
 public interface UserDAOInterface {
 
 	/*
@@ -14,4 +17,6 @@ public interface UserDAOInterface {
 	 * 		- Set goal 
 	 */
 	
+	
+	public User getUserByEmail(String email);
 }
