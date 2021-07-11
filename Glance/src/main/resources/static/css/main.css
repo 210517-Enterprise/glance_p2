@@ -21,6 +21,10 @@ header {
   background-color: var(--secondary-color);
 }
 
+nav {
+  float: right;
+}
+
 footer {
   background-color: var(--accent-color);
   color: var(--secondary-color);
@@ -36,6 +40,18 @@ main {
 h2 {
   font-size: 4rem;
   margin: 2%;
+}
+
+fieldset {
+  width: 75%;
+  margin: 2% auto;
+  padding: 2%;
+  border: 1px solid black;
+}
+
+#buttons input {
+    width: 100px;
+    margin-left: 15px;
 }
 
 #main-page-content {
@@ -62,6 +78,7 @@ h2 {
 
 .login {
   float: right;
+  margin: 10px 0;
 }
 
 .jumbotron {
@@ -86,4 +103,22 @@ h2 {
   background-color: rgba(244,244,244,0.5);
   width: 100%;
   height: 500px;
+}
+
+.nav-link:link {
+  color: var(--acent-color);
+}
+
+.nav-link:visited {
+  color: var(--acent-color);
+}
+
+.nav-link:hover{
+  color: darkgrey;
+}
+
+#buttons {
+  width: 75%;
+  margin: 0 auto;
+  text-align: right;
 }

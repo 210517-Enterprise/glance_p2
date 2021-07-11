@@ -1,6 +1,14 @@
 package com.revature.repositories;
 
+import com.revature.models.User;
+
 public class UserDAOImpl implements UserDAOInterface {
+
+	@Override
+	public User getUserByEmail(String email) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	/*
 	 * Implementation of user dao interface that makes calles

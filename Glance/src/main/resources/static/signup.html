@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="css/main.css">
+    <title>Glance - User Sign Up</title>
+  </head>
+  <body>
+
+    <div class="container">
+
+      <header>
+        <div class="logoImg d-inline">
+            <img src="images/logo2.png" alt="Glance" />
+        </div>
+
+        <nav class="navbar navbar-expand-md">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="index.html">Home</a>
+            </li>
+          </ul>
+        </nav>
+
+      </header>
+
+      <main>
+
+        <section id="main-page-content">
+          <h3 class="center">New User Signup!</h3>
+
+          <form class="" action="" method="post">
+
+            <div class="form-group">
+                <fieldset>
+                  <legend>Personal Information</legend>
+                  <label for="firstname">First Name:</label>
+                  <input type="text" name="firstname" class="form-control">
+
+                  <label for="lastname">Last Name:</label>
+                  <input type="text" name="lastname" class="form-control">
+
+                  <label for="email">E-mail Address:</label>
+                  <input type="email" name="email" class="form-control">
+
+                  <label for="password">Password:</label>
+                  <input type="password" name="password" class="form-control">
+                  </fieldset>
+            </div>
+
+            <div class="form-group">
+              <fieldset>
+                <legend>Contact Information</legend>
+
+              <label for="phone">Telephone Number: </label>
+              <input type="tel" name="phonenumber" class="form-control">
+              <label for="address1">Street Address:</label>
+              <input type="text" name="address1" class="form-control">
+              <label for="address1">Address Line 2:</label>
+              <input type="text" name="address2" class="form-control">
+
+              <div class="row">
+                <div class="col">
+                  <label for="city">City: </label>
+                </div>
+                <div class="col">
+                  <label for="state">State: </label>
+                </div>
+                <div class="col">
+                  <label for="zip">Zip Code: </label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <input type="text" name="city" class="form-control">
+                </div>
+                <div class="col">
+                  <input type="text" name="state" class="form-control">
+                </div>
+                <div class="col">
+                  <input type="number" name="zip" class="form-control">
+                </div>
+              </div>
+              </fieldset>
+            </div>
+
+
+            <div class="form-group" id="buttons">
+              <input type="submit" name="submit" value="Submit" class="btn btn-primary">
+              <input type="reset" name="reset" value="Reset" class="btn btn-warning">
+            </div>
+
+          </form>
+
+        </section>
+      </main>
+
+      <footer>
+        &copy; 2021
+      </footer>
+
+    </div>
+
+    <script src="js/bootstrap.bundle.min.js" charset="utf-8"></script>
+  </body>
+</html>
