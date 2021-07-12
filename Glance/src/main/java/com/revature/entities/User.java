@@ -11,14 +11,16 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Users entity for the glance application. 
  * @author Kyle Castillo
  *
  */
-@Data @NoArgsConstructor
+@Data @NoArgsConstructor 
 @Entity @Table(name="users")
 public class User {
 	
@@ -31,29 +33,33 @@ public class User {
 	private String email;
 	
 	@NotEmpty
+	@Column(nullable=false)
+	private @Getter @Setter String password;
+	
+	@NotEmpty
 	@Column(nullable=false, name="first_name")
-	private String firstName;
+	private @Getter @Setter String firstName;
 	
 	@NotEmpty
 	@Column(nullable=false, name="last_name")
-	private String lastName;
+	private @Getter @Setter String lastName;
 	
 	@NotEmpty
 	@Column(nullable=false)
-	private String cellphone; //FIXME should this be unique?
+	private @Getter @Setter String cellphone; //FIXME should this be unique?
 	
 	@NotEmpty
 	@Column(nullable=false, name="main_address")
-	private String mainAddress;
+	private @Getter @Setter String mainAddress;
 	
 	@Column(name="alt_address")
-	private String altAddress;
+	private @Getter @Setter String altAddress;
 	
 	@Column(name="plaid_token", unique=true)
-	private String plaidToken; //FIXME, check to see if this should be nullable or not
+	private @Getter @Setter String plaidToken; //FIXME, check to see if this should be nullable or not
 	
 	@Column(name="plaid_item", unique=true)
-	private String plaidItem; //FIXME, check to see if this should be nullable or not.
+	private @Getter @Setter String plaidItem; //FIXME, check to see if this should be nullable or not.
 	
 	@Column(name="creation_date")
 	private Date creationDate;
@@ -62,15 +68,17 @@ public class User {
 	 * Primary constructor for the User entity.<br>
 	 * This includes all necessary fields needed to create a user.
 	 * @param email the email the user signs up with, this must be unique.
+	 * @param password the password the user uses to log in.
 	 * @param firstName the first name of the user.
 	 * @param lastName the last name of the user.
 	 * @param cellphone the cellphone number of the user.
 	 * @param mainAddress the primary addresss of the user
 	 */
-	public User(@NotEmpty String email, @NotEmpty String firstName, @NotEmpty String lastName,
+	public User(@NotEmpty String email, @NotEmpty String password, @NotEmpty String firstName, @NotEmpty String lastName,
 			@NotEmpty String cellphone, @NotEmpty String mainAddress) {
 		super();
 		this.email = email;
+		this.password = password;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.cellphone = cellphone;
@@ -89,11 +97,12 @@ public class User {
 	 * @param plaidToken the plaid token associated with the user.
 	 * @param plaidItem the plaid item associated with the user.
 	 */
-	public User(@NotEmpty String email, @NotEmpty String firstName, @NotEmpty String lastName,
+	public User(@NotEmpty String email, @NotEmpty String password, @NotEmpty String firstName, @NotEmpty String lastName,
 			@NotEmpty String cellphone, @NotEmpty String mainAddress, String altAddress, String plaidToken,
 			String plaidItem) {
 		super();
 		this.email = email;
+		this.password = password;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.cellphone = cellphone;
@@ -113,10 +122,11 @@ public class User {
 	 * @param mainAddress the primary address of the user.
 	 * @param altAddress an alternate address of the user.
 	 */
-	public User(@NotEmpty String email, @NotEmpty String firstName, @NotEmpty String lastName,
+	public User(@NotEmpty String email, @NotEmpty String password, @NotEmpty String firstName, @NotEmpty String lastName,
 			@NotEmpty String cellphone, @NotEmpty String mainAddress, String altAddress) {
 		super();
 		this.email = email;
+		this.password = password;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.cellphone = cellphone;
