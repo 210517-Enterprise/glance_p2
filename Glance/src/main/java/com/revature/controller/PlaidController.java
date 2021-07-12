@@ -91,16 +91,14 @@ public class PlaidController {
 //				return accessToken;
 //	}
 	
-	@PostMapping(value="linktoken/exchange", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value="linktoken/exchange")
 	public String[] exchangeToken(@RequestBody String publicToken) throws IOException {
 		System.out.println(publicToken);
+		String public_token = publicToken.substring(0, (publicToken.length() - 1));
+		System.out.println(public_token);
 		String[] access_tokens = new String[2];
-//		String[] token = publicToken.toString().split(" : ");
-//		
-//		System.out.println(token[1].getClass());
-//		
 		ItemPublicTokenExchangeRequest request = new ItemPublicTokenExchangeRequest()
-			      .publicToken(publicToken);
+			      .publicToken(public_token);
 		
 		System.out.println(request);
 		System.out.println(plaidClient.itemPublicTokenExchange(request).request());
@@ -111,6 +109,8 @@ public class PlaidController {
 		
 		access_tokens[0] = response.body().getAccessToken();
 		access_tokens[1] = response.body().getItemId();
+		
+		//write more code here to persist these to the DB where they belong
 		
 		return access_tokens;
 	}

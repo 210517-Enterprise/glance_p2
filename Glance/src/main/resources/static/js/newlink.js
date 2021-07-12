@@ -23,6 +23,8 @@ let generateToken = (async function() {
     })
     let accessToken = await response.json();
     console.log("Access token " + accessToken);
+
+
   },
   onLoad: () => {},
   onExit: (err, metadata) => {
