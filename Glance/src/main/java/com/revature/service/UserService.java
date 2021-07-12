@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.revature.models.Account;
 //Project Imports
 import com.revature.models.User;
+import com.revature.repositories.AccountDAOInterface;
 import com.revature.repositories.UserDAOInterface;
 import com.revature.util.APIAccessUtil;
 
@@ -42,6 +43,12 @@ public class UserService {
 	@Qualifier("UserDAOImpl")
 	private static UserDAOInterface userDAO;
 	
+	
+	//Can be autowired - all userDAO's should be the same
+	@Autowired
+	@Qualifier("UserDAOImpl")
+	private static AccountDAOInterface accountDAO;
+
 	//connection Util supplies connections to the API
 	private static APIAccessUtil plaidUtil;
 	
@@ -124,8 +131,27 @@ public class UserService {
 	}
 	//END LOAD ACCOUNTS
 	
+	
+	
+	/* Attempts to add a new account based on a plaid "itemid"
+	 * and a user access token (we may get internally from user
+	 * 
+	 *  returns account with info if successfull
+	 *  
+	 *  @param itemid string of value needed to access account via plaid
+	 *  @param accesstoken string token needed to validate account access
+	 * 
+	 */
 	public Account addAccount(String itemid, String accesstoken) {
 		
+		//get the account from Plaid
+			//String returnInfo = plaidUtil.findAccount(itemid, accesstoken);
+		
+		//build account type from returninfo
+			//Account = new Account(returnInfo);
+		
+		//save account info with accountsDAO
+			
 		
 		return null;
 	}
