@@ -1,0 +1,35 @@
+LIST OF TESTS TO BUILD PER CLASS:
+
+
+	USERSERVICE.JAVA
+	------------------------
+		- test dependeny injection on UserDAO
+		- test dependency injection on User	-	https://www.baeldung.com/spring-annotations-resource-inject-autowire
+
+		- Test logic on Login
+		- Test logic on create new user 	- simply makes a call to user DAO
+		- Test logic on loadAccounts -		- makes called to Plaid Connection Util
+			- throws error for no accounts
+			- loads accounts from plaid when called correctly
+
+		- Test logic on AddAccount(itemID accesstoken)
+			- throws error if access token is invalid
+			- successfully adds legitimate account
+
+		- Test logic on getAllAccountsInfo()
+			- throws error on no accounts
+			- correctly returns single string of JSON
+		
+		- Test logic on getAccountInfo(int accID)
+			- throws error on no accounts
+			- correctly returns single string of JSON
+
+
+		- Test logic on getUserInfo()
+			- correct JSON string is returned
+
+
+
+	NEXT_CLASS.JAVA
+	------------------------
+		
