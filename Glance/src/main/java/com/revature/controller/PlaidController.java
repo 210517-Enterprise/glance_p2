@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.plaid.client.ApiClient;
+import com.plaid.client.JSON;
 import com.plaid.client.model.CountryCode;
 import com.plaid.client.model.ItemPublicTokenExchangeRequest;
 import com.plaid.client.model.ItemPublicTokenExchangeResponse;
@@ -67,24 +68,53 @@ public class PlaidController {
 	    return new LinkToken(response.body().getLinkToken());
 	}
 	
+//	@PostMapping(value="linktoken/exchange", produces = MediaType.APPLICATION_JSON_VALUE)
+//	public String exchangeToken(@RequestBody String publicToken) throws IOException {
+//		String[] token = publicToken.split(" ");
+//		System.out.println(token[token.length - 1].strip());
+//		
+//		
+//		
+//		
+//		ItemPublicTokenExchangeRequest request = new ItemPublicTokenExchangeRequest()
+//				  .publicToken(token[token.length - 1]);
+//
+//		System.out.println(request);
+//				Response<ItemPublicTokenExchangeResponse> response = plaidClient
+//				  .itemPublicTokenExchange(request)
+//				  .execute();
+//				System.out.println(response);
+//				if(response.body() == null) {
+//					return response.raw().toString();
+//				}
+//				String accessToken = response.body().getAccessToken();
+//				return accessToken;
+//	}
+	
 	@PostMapping(value="linktoken/exchange", produces = MediaType.APPLICATION_JSON_VALUE)
-	public String exchangeToken(@RequestBody String publicToken) throws IOException {
+	public String[] exchangeToken(@RequestBody String publicToken) throws IOException {
 		System.out.println(publicToken);
-		
-		
-		
+		String[] access_tokens = new String[2];
+//		String[] token = publicToken.toString().split(" : ");
+//		
+//		System.out.println(token[1].getClass());
+//		
 		ItemPublicTokenExchangeRequest request = new ItemPublicTokenExchangeRequest()
-				  .publicToken(publicToken)
-				  .clientId(apiKeys.get("clientId"))
-				  .secret(apiKeys.get("secret"));
+			      .publicToken(publicToken);
 		
 		System.out.println(request);
-				Response<ItemPublicTokenExchangeResponse> response = plaidClient
-				  .itemPublicTokenExchange(request)
-				  .execute();
-				String accessToken = response.body().getAccessToken();
-				return accessToken;
+		System.out.println(plaidClient.itemPublicTokenExchange(request).request());
+		Response<ItemPublicTokenExchangeResponse> response = plaidClient
+			      .itemPublicTokenExchange(request)
+			      .execute();
+		System.out.println(response);
+		
+		access_tokens[0] = response.body().getAccessToken();
+		access_tokens[1] = response.body().getItemId();
+		
+		return access_tokens;
 	}
+	
 
 	public static class LinkToken {
 	    @JsonProperty
