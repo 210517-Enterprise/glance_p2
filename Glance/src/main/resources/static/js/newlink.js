@@ -16,11 +16,15 @@ let generateToken = (async function() {
     console.log("Public token " + public_token);
     let response = await fetch("/api/linktoken/exchange", {
       method: 'POST',
-      body: {
-        public_token: public_token,
-    }})
+      headers: {
+        "Content-Type" : "application/x-www-form-urlencoded;charset=UTF-8",
+      },
+      body: public_token,
+    })
     let accessToken = await response.json();
     console.log("Access token " + accessToken);
+
+
   },
   onLoad: () => {},
   onExit: (err, metadata) => {
