@@ -1,12 +1,14 @@
  package com.revature.service;
  
- import org.springframework.beans.factory.annotation.Autowired;
+ import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
  import org.springframework.beans.factory.annotation.Qualifier;
  import org.springframework.stereotype.Service;
  
   //Project Imports
  import com.revature.entities.*;
- import com.revature.repositories.UserDAOInterface;
+ import com.revature.repositories.*;
  import com.revature.util.APIAccessUtil;
  
   //Other Imports
@@ -125,14 +127,26 @@
  	
  	public Account addAccount(String itemid, String accesstoken) {
 		 //get the account from Plaid
-			// String returnInfo = plaidUtil.findAccount(itemid, accesstoken);
+			// String returnInfo = plaidUtil.findAccount(accesstoken);
 		
 		 //build account type from returninfo
 			 //Account = new Account(returnInfo);
 		
 		 //save account info with accountsDAO
+ 		
+ 		
+		return null;
  	}
+ 	// END ADD ACCOUNT
  	
+ 	
+ 	public String getAllAccountsAsJSON() {
+ 		List<Account> accs = user.getAccounts();
+ 		
+ 		for(Account a : accs) {
+ 			
+ 		}
+ 	}
  	
  	
  	
