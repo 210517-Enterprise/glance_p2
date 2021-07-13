@@ -42,7 +42,7 @@ import lombok.Setter;
 @Entity @Table(name="users")
 public class User {
 	
-	@Id @Column(name="user_id")
+	@Id @Column(name="user_idgi")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
