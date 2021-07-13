@@ -146,13 +146,15 @@ import org.springframework.beans.factory.annotation.Autowired;
  	
  	public String getAllAccountsAsJSON() 
  	{
- 		List<Account> accs = user.getAllAccounts();
+ 		/*List<Account> accs = user.getAllAccounts();
  		StringBuilder sb = new StringBuilder();
  		
  		sb.append("[");
  		for(Account a : accs) {
  			sb.append(a.stringAsJSON());
  		}
+ 		*/
+ 		return null;
  	}
  	//END GET ALL ACCOUNTS
  	
