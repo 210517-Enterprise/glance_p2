@@ -4,19 +4,14 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.plaid.client.ApiClient;
-import com.plaid.client.JSON;
 import com.plaid.client.model.CountryCode;
 import com.plaid.client.model.ItemPublicTokenExchangeRequest;
 import com.plaid.client.model.ItemPublicTokenExchangeResponse;
@@ -68,28 +63,7 @@ public class PlaidController {
 	    return new LinkToken(response.body().getLinkToken());
 	}
 	
-//	@PostMapping(value="linktoken/exchange", produces = MediaType.APPLICATION_JSON_VALUE)
-//	public String exchangeToken(@RequestBody String publicToken) throws IOException {
-//		String[] token = publicToken.split(" ");
-//		System.out.println(token[token.length - 1].strip());
-//		
-//		
-//		
-//		
-//		ItemPublicTokenExchangeRequest request = new ItemPublicTokenExchangeRequest()
-//				  .publicToken(token[token.length - 1]);
-//
-//		System.out.println(request);
-//				Response<ItemPublicTokenExchangeResponse> response = plaidClient
-//				  .itemPublicTokenExchange(request)
-//				  .execute();
-//				System.out.println(response);
-//				if(response.body() == null) {
-//					return response.raw().toString();
-//				}
-//				String accessToken = response.body().getAccessToken();
-//				return accessToken;
-//	}
+
 	
 	@PostMapping(value="linktoken/exchange")
 	public String[] exchangeToken(@RequestBody String publicToken) throws IOException {
@@ -118,7 +92,7 @@ public class PlaidController {
 
 	public static class LinkToken {
 	    @JsonProperty
-	    private String linkToken;
+	    public String linkToken;
 
 
 	    public LinkToken(String linkToken) {

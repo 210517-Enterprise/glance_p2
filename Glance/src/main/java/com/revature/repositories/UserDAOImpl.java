@@ -1,6 +1,6 @@
 package com.revature.repositories;
 
-import com.revature.models.User;
+import com.revature.entities.User;
 
 public class UserDAOImpl implements UserDAOInterface {
 

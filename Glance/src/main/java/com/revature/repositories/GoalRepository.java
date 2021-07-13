@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -14,16 +15,18 @@ public interface GoalRepository extends JpaRepository<Goal,Integer>{
 	
 	
 	Goal findGoalById(int id);
-	List<Goal> findGoalsByName(String name);
-	List<Goal> findGoalsByUserId(int id);
-	List<Goal> findGoalsByAccountId(int id);
+	List<Goal> findGoalByGoalName(String name);
+	List<Goal> findGoalByUserId(int id);
+	List<Goal> findGoalByAccountId(int id);
 	//TODO Implementing a query to find users before a given date.
 	
-	@Query("update Goal goal_amount=:amount where id=:id")
+	@Modifying
+	@Query("update Goal g set g.goalAmount=:amount where g.id=:id")
 	void updateGoalAmount(int id, int amount);
 	
-	@Query("update Goal goal_amount=:amount where goal_name =:name AND user_id =:userID")
-	void updateGoalAmount(String name, int userID, int amount);
+	@Modifying
+	@Query("update Goal g set g.goalAmount=:amount where g.goalName =:goalName AND g.userId =:userId")
+	void updateGoalAmount(String goalName, int userId, int amount);
 	
 	//TODO implementing setting the finish date for a goal.
 }

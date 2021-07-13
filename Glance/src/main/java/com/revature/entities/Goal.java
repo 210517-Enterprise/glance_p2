@@ -22,7 +22,7 @@ import lombok.Setter;
 @Entity @Table(name="goals")
 public class Goal {
 	
-	@Id @Column
+	@Id @Column(name="goal_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
@@ -35,7 +35,7 @@ public class Goal {
 	private @Getter @Setter int goalAmount;
 	
 	@NotNull
-	@ManyToOne @JoinColumn(name="user_id")
+	@ManyToOne(targetEntity = User.class) @JoinColumn(name="user_id")
 	private @Getter @Setter int userId;
 	
 	@NotNull

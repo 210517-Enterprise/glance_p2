@@ -1,7 +1,7 @@
 package com.revature.repositories;
 
-//Project Includes
-import com.revature.models.*;
+import com.revature.entities.User;
+
 
 public interface UserDAOInterface {
 
