@@ -44,6 +44,10 @@ import org.springframework.beans.factory.annotation.Autowired;
  	@Qualifier("UserDAOImpl")
  	private static UserDAOInterface userDAO;
  	
+ 	@Autowired
+ 	@Qualifier("AccDAOImpl")
+ 	private static AccountDAOInterface accDAO;
+ 	
  	//connection Util supplies connections to the API
  	private static APIAccessUtil plaidUtil;
  	
@@ -125,7 +129,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  	}
  	 //END LOAD ACCOUNTS
  	
- 	public Account addAccount(String itemid, String accesstoken) {
+ 	public Account addAccount(String plaidAccountId, String accesstoken) {
 		 //get the account from Plaid
 			// String returnInfo = plaidUtil.findAccount(accesstoken);
 		
@@ -140,14 +144,22 @@ import org.springframework.beans.factory.annotation.Autowired;
  	// END ADD ACCOUNT
  	
  	
- 	public String getAllAccountsAsJSON() {
- 		List<Account> accs = user.getAccounts();
+ 	public String getAllAccountsAsJSON() 
+ 	{
+ 		List<Account> accs = user.getAllAccounts();
+ 		StringBuilder sb = new StringBuilder();
  		
+ 		sb.append("[");
  		for(Account a : accs) {
- 			
+ 			sb.append(a.stringAsJSON());
  		}
  	}
+ 	//END GET ALL ACCOUNTS
  	
+ 	public String getAccountAsJSON(int internalID) {
+ 		//return accDAO.findById(internalID).stringAsJSON();
+ 		return null;
+ 	}// END GETACCOUNTASJSON
  	
  	
  	
