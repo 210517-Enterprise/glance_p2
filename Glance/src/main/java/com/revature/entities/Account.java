@@ -37,8 +37,8 @@ public class Account {
 	private int id;
 	
 	@NotNull
-	@ManyToOne @JoinColumn(nullable=false,name="user_id")
-	private @Getter @Setter User user;
+	@ManyToOne @JoinColumn(nullable=false,name="user_id", referencedColumnName="user_id")
+	private @Getter @Setter int userId;
 	
 	@OneToOne @JoinColumn(name="goal_id")
 	private @Getter @Setter Goal goal;
@@ -59,11 +59,11 @@ public class Account {
 	 * @param plaidItem the plaid item provided when adding an account from plaid
 	 * @param plaidKey
 	 */
-	public Account(@NotNull String plaidItem, @NotNull String plaidKey, @NotNull User user) {
+	public Account(@NotNull String plaidItem, @NotNull String plaidKey, @NotNull int userId) {
 		super();
 		this.plaidItem = plaidItem;
 		this.plaidKey = plaidKey;
-		this.user = user;
+		this.userId = userId;
 		this.creationDate = new Date();
 	}
 }

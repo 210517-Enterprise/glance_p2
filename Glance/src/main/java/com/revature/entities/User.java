@@ -44,7 +44,7 @@ import lombok.Setter;
 @Entity @Table(name="users")
 public class User {
 	
-	@Id @Column(name="user_idgi")
+	@Id @Column(name="user_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
@@ -75,7 +75,7 @@ public class User {
 	@Column(name="alt_address")
 	private @Getter @Setter String altAddress;
 	
-	@OneToMany(mappedBy="accounts")
+	@OneToMany(mappedBy="user_id")
 	private @Getter List<Account> accounts;
 	
 	

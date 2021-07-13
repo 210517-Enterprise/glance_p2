@@ -41,7 +41,7 @@ public class Goal {
 
 	
 	@NotNull
-	@OneToOne @Column @JoinColumn(name="account_id")
+	@OneToOne @JoinColumn(name="account_id")
 	private @Getter @Setter Account account;
 	
 	@Column(name="start_date")
