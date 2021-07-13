@@ -1,12 +1,14 @@
 package com.revature.entities;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 
@@ -64,7 +66,7 @@ public class User {
 	
 	@NotEmpty
 	@Column(nullable=false)
-	private @Getter @Setter String cellphone; //FIXME should this be unique?
+	private @Getter @Setter String cellphone;
 	
 	@NotEmpty
 	@Column(nullable=false, name="main_address")
@@ -73,14 +75,12 @@ public class User {
 	@Column(name="alt_address")
 	private @Getter @Setter String altAddress;
 	
-	@Column(name="plaid_token", unique=true)
-	private @Getter @Setter String plaidToken; //FIXME, check to see if this should be nullable or not
+	@OneToMany(mappedBy="accounts")
+	private @Getter List<Account> accounts;
 	
-	@Column(name="plaid_item", unique=true)
-	private @Getter @Setter String plaidItem; //FIXME, check to see if this should be nullable or not.
 	
 	@Column(name="creation_date")
-	private Date creationDate;
+	private @Getter Date creationDate;
 	
 	/**
 	 * Primary constructor for the User entity.<br>
@@ -116,31 +116,6 @@ public class User {
 	 * @param plaidItem the plaid item associated with the user.
 	 */
 	public User(@NotEmpty String email, @NotEmpty String password, @NotEmpty String firstName, @NotEmpty String lastName,
-			@NotEmpty String cellphone, @NotEmpty String mainAddress, String altAddress, String plaidToken,
-			String plaidItem) {
-		super();
-		this.email = email;
-		this.password = password;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.cellphone = cellphone;
-		this.mainAddress = mainAddress;
-		this.altAddress = altAddress;
-		this.plaidToken = plaidToken;
-		this.plaidItem = plaidItem;
-		this.creationDate = new Date();
-	}
-	
-	/**
-	 * Constructor used to instantiate all fields not related to the plaid API.
-	 * @param email the email the user signs up with, this must be unique.
-	 * @param firstName the first name of the user.
-	 * @param lastName the last name of the user.
-	 * @param cellphone the cellphone number of the user.
-	 * @param mainAddress the primary address of the user.
-	 * @param altAddress an alternate address of the user.
-	 */
-	public User(@NotEmpty String email, @NotEmpty String password, @NotEmpty String firstName, @NotEmpty String lastName,
 			@NotEmpty String cellphone, @NotEmpty String mainAddress, String altAddress) {
 		super();
 		this.email = email;
@@ -151,7 +126,5 @@ public class User {
 		this.mainAddress = mainAddress;
 		this.altAddress = altAddress;
 		this.creationDate = new Date();
-	}
-	
-	
+	}	
 }
