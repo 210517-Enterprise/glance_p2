@@ -316,19 +316,19 @@
 										},
 										{
 											"_type": "UMLAttributeView",
-											"_id": "AAAAAAF6f092GhUdo0w=",
+											"_id": "AAAAAAF6mDgHKBe79E4=",
 											"_parent": {
 												"$ref": "AAAAAAF6f0iDqBSfAwQ="
 											},
 											"model": {
-												"$ref": "AAAAAAF6f092FRUai1M="
+												"$ref": "AAAAAAF6mDgHFxe4dfE="
 											},
 											"font": "Arial;13;0",
 											"left": 333,
 											"top": 381,
 											"width": 215,
 											"height": 13,
-											"text": "+AccountsService",
+											"text": "+Map SeshID UserService",
 											"horizontalAlignment": 0
 										}
 									],
@@ -7181,12 +7181,11 @@
 						},
 						{
 							"_type": "UMLAttribute",
-							"_id": "AAAAAAF6f092FRUai1M=",
+							"_id": "AAAAAAF6mDgHFxe4dfE=",
 							"_parent": {
 								"$ref": "AAAAAAF6f0iDqBSXCaE="
 							},
-							"name": "AccountsService",
-							"type": ""
+							"name": "Map SeshID UserService"
 						}
 					],
 					"operations": [
@@ -7844,7 +7843,8 @@
 							"_parent": {
 								"$ref": "AAAAAAF6f2U7kzWmUkc="
 							},
-							"name": "User u1"
+							"name": "User u1",
+							"type": ""
 						}
 					],
 					"operations": [
