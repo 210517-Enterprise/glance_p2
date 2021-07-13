@@ -75,7 +75,7 @@ public class User {
 	@Column(name="alt_address")
 	private @Getter @Setter String altAddress;
 	
-	@OneToMany(mappedBy="user_id")
+	@OneToMany(mappedBy="userId")
 	private @Getter List<Account> accounts;
 	
 	

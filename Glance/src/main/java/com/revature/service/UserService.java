@@ -37,6 +37,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 		 * needs to be constructor initialized I dont think this needs to be "injected",
 		 * simply needs to be passed in the getBeans method with args
 		 */
+	
+	
  	private User user;
  	
 // 	 Can be autowired - all userDAO's should be the same

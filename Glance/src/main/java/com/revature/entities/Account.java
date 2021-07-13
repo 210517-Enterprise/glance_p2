@@ -37,10 +37,10 @@ public class Account {
 	private int id;
 	
 	@NotNull
-	@ManyToOne @JoinColumn(nullable=false,name="user_id", referencedColumnName="user_id")
+	@ManyToOne(targetEntity = User.class) @JoinColumn(nullable=false,name="user_id")
 	private @Getter @Setter int userId;
 	
-	@OneToOne @JoinColumn(name="goal_id")
+	@OneToOne(targetEntity = Goal.class) @JoinColumn(name="goal_id")
 	private @Getter @Setter Goal goal;
 	
 	@NotNull
