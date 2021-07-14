@@ -26,6 +26,7 @@ public class MainController {
 	public String registerUser (@ModelAttribute User user, Model model) {
 		model.addAttribute("user", user);
 		System.out.println(model.getAttribute("user"));
+		System.out.println(user.getPassword());
 		return "result";
 	}
 }

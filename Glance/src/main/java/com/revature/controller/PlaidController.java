@@ -92,23 +92,14 @@ public class PlaidController {
 	    AccountsBalanceGetRequest request = new AccountsBalanceGetRequest()
 	      .accessToken(accessToken);
 
+	    System.out.println(accessToken);
+	    System.out.println(request);
+	    
 	    Response<AccountsGetResponse> response = plaidClient
 	      .accountsBalanceGet(request)
 	      .execute();
-	    return response.body();
-	   
-	  }
-	
-	@GetMapping(value="accounts/get")
-	 public AccountsGetResponse getAccounts1(@RequestBody String accessToken) throws IOException {
-	    AccountsGetRequest request = new AccountsGetRequest()
-	    .accessToken(accessToken);
 	    
-	    System.out.println(request);
-
-	    Response<AccountsGetResponse> response = plaidClient
-	      .accountsGet(request)
-	      .execute();
+	    System.out.println(response);
 	    return response.body();
 	  }
 
