@@ -101,6 +101,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  		
  		User u = userDAO.getUserByEmail(email);
  		
+ 		
  		 //check if u is null or if exception is thrown
  		if(u == null) {
  			throw new NoSuchTupleException("No tuple with this email in DB");
@@ -113,6 +114,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 		 */	
  		
  		return null;
+ 	}
+ 	
+ 	//FIXME Literally just an example of using the userRepo to access the email, get the password, and compare them.
+ 	public String login2(String email, String password) {
+ 		User u = userRepo.findUserByEmail(email);
+ 		
+ 		if(u == null)
+ 			throw new ResourceNotFoundException();
+ 		
+ 		//Check the password against what is in the DB
+ 		String userPass = userRepo.findPasswordById(u.getId());
+ 		
+ 		if(userPass.equals(password))
+ 			return "The user was able to login";
+ 		else throw new InvalidPasswordException("Password did not match account");
  	}
  	//END METHOD LOGIN
  	
