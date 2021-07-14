@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -37,10 +38,12 @@ public class Account {
 	private int id;
 	
 	@NotNull
-	@ManyToOne @JoinColumn(nullable=false,name="user_id")
+	@ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY) 
+	@JoinColumn(nullable=false,name="user_id")
 	private @Getter @Setter User user;
 	
-	@OneToOne @JoinColumn(name="goal_id")
+	@OneToOne(targetEntity = Goal.class, fetch = FetchType.LAZY)
+	@JoinColumn(name="goal_id")
 	private @Getter @Setter Goal goal;
 	
 	@NotNull
@@ -51,7 +54,7 @@ public class Account {
 	@Column(nullable=false, name="plaid_key")
 	private @Getter @Setter String plaidKey;
 	
-	@Column
+	@Column(name="creation_date")
 	private @Getter Date creationDate;
 	
 	/**

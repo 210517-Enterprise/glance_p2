@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,34 +18,30 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/*
- * User Spring bean object that holds quantities we want to know
- * about a user, expected to include
- * 		- firstName: String
- * 		- lastName: String
- * 		- profileID: int GENERATED
- * 		- pf: ProfileFacets (Like goals, we mat just do a list of Goasl)
- * 		- email: string
- * 		- password: string
- * 		- accounts: List<Account>
- * 		- phone: string
- * 		- plaid_key: string
- * 
- * 		-Class should be annotated to allow saving to db by DAOImpl
- * 	
- * 
- * 		Important methods
- * 		stringAsJSON : String - returns string of all data as JSON to be interpreted by front end
- * 
- * 		@author Kyle Castillo
- * 
- */
 
+/**
+ * User Spring Entity object that contains the following information regarding a user:<br>
+ * <ul>
+ * <li>The first name of the user</li>
+ * <li>The last name of the user</li>
+ * <li>An email for the user</li>
+ * <li>A password, which will be hashed, for the user</li>
+ * <li>A cellphone for the user</li>
+ * <li>A main address for the user</li>
+ * <li>An optional alternate address</li>
+ * <li>Accounts associated with the user, this is purely used as a one to many relationship for accounts the user owns</li>
+ * <li>A timestamp of when the user was created</li>
+ * </ul>
+ * <br>
+ * The User entity bean will be annotated to allow an implementation done by a UserRepository and UserService class.
+ * @author Kyle Castillo
+ *
+ */
 @Data @NoArgsConstructor 
 @Entity @Table(name="users")
 public class User {
 	
-	@Id @Column(name="user_idgi")
+	@Id @Column(name="user_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
@@ -75,7 +72,7 @@ public class User {
 	@Column(name="alt_address")
 	private @Getter @Setter String altAddress;
 	
-	@OneToMany(mappedBy="accounts")
+	@OneToMany(mappedBy="user", fetch = FetchType.LAZY)
 	private @Getter List<Account> accounts;
 	
 	
