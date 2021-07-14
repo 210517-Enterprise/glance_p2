@@ -13,6 +13,9 @@ public class Driver {
 		
 		LinkToken token = pc.createToken();
 		System.out.println(token.linkToken);
+		
+		System.out.println(pc.getAccounts("access-sandbox-bbd17205-1734-41cb-9536-77146d0ffd77"));
+		System.out.println(pc.getAccounts1("access-sandbox-bbd17205-1734-41cb-9536-77146d0ffd77"));
 	}
 
 }

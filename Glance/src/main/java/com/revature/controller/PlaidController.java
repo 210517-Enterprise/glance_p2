@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.plaid.client.ApiClient;
+import com.plaid.client.model.AccountsBalanceGetRequest;
+import com.plaid.client.model.AccountsGetRequest;
+import com.plaid.client.model.AccountsGetResponse;
 import com.plaid.client.model.CountryCode;
 import com.plaid.client.model.ItemPublicTokenExchangeRequest;
 import com.plaid.client.model.ItemPublicTokenExchangeResponse;
@@ -54,8 +58,6 @@ public class PlaidController {
 				.products(Arrays.asList(Products.AUTH, Products.TRANSACTIONS))
 				.countryCodes(Arrays.asList(CountryCode.US, CountryCode.CA))
 				.language("en");
-			
-			System.out.println(request);
 
 	    	Response<LinkTokenCreateResponse> response = plaidClient
 				.linkTokenCreate(request)
@@ -73,13 +75,9 @@ public class PlaidController {
 		String[] access_tokens = new String[2];
 		ItemPublicTokenExchangeRequest request = new ItemPublicTokenExchangeRequest()
 			      .publicToken(public_token);
-		
-		System.out.println(request);
-		System.out.println(plaidClient.itemPublicTokenExchange(request).request());
 		Response<ItemPublicTokenExchangeResponse> response = plaidClient
 			      .itemPublicTokenExchange(request)
 			      .execute();
-		System.out.println(response);
 		
 		access_tokens[0] = response.body().getAccessToken();
 		access_tokens[1] = response.body().getItemId();
@@ -89,6 +87,30 @@ public class PlaidController {
 		return access_tokens;
 	}
 	
+	@GetMapping(value="balances/get")
+	public AccountsGetResponse getAccounts(@RequestBody String accessToken) throws IOException {
+	    AccountsBalanceGetRequest request = new AccountsBalanceGetRequest()
+	      .accessToken(accessToken);
+
+	    Response<AccountsGetResponse> response = plaidClient
+	      .accountsBalanceGet(request)
+	      .execute();
+	    return response.body();
+	   
+	  }
+	
+	@GetMapping(value="accounts/get")
+	 public AccountsGetResponse getAccounts1(@RequestBody String accessToken) throws IOException {
+	    AccountsGetRequest request = new AccountsGetRequest()
+	    .accessToken(accessToken);
+	    
+	    System.out.println(request);
+
+	    Response<AccountsGetResponse> response = plaidClient
+	      .accountsGet(request)
+	      .execute();
+	    return response.body();
+	  }
 
 	public static class LinkToken {
 	    @JsonProperty
