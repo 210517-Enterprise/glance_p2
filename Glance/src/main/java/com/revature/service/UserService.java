@@ -79,13 +79,17 @@ import org.springframework.beans.factory.annotation.Autowired;
  	 */
  	public static User login(String email, String password) {
  		
- 		//User u = userDAO.getUserByEmail(email);
+ 		User u = userDAO.getUserByEmail(email);
  		
  		 //check if u is null or if exception is thrown
+ 		if(u == null) {
+ 			return null;
+ 		}
  		
- 		
- 		// test if passwords match
- 			  //return u;
+ 		// test if passwords match - need an encrypting dependency
+		/*
+		 * if(u.getPassword().equals(Spring.hashPassword(password))) { return u; }
+		 */	
  		
  		return null;
  	}

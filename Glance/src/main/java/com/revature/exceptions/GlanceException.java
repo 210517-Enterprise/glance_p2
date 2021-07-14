@@ -1,5 +1,9 @@
 package com.revature.exceptions;
 
+/*
+ * General Exception for unspecified errors
+ */
+
 public class GlanceException extends RuntimeException{
 	
 	private static final long serialVersionUID = 8512712143164755580L;
