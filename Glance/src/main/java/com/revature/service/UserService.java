@@ -30,6 +30,10 @@ import org.springframework.beans.factory.annotation.Autowired;
  	 * 
  	 */
  	
+	 //FIXME Temporarily adding UserRepo as a parameter for the UserService class.
+	 private UserRepository userRepo;
+	 private AccountRepository accountRepo;
+	 private GoalRepository goalRepo;
  	
  		/* DECLARE VARIABLES */
  	
@@ -47,13 +51,26 @@ import org.springframework.beans.factory.annotation.Autowired;
  	//connection Util supplies connections to the API
  	private static APIAccessUtil plaidUtil;
  	
+//FIXME Temporarly commenting this out in order to test the functionality of UserRepository. 	
+// 	/* Constructor enforces dependency injection on user variable
+// 	 * 
+// 	 *  @param user user obj this service is based off of
+// 	 */
+// 	public UserService(User user) {
+// 		this.user = user;
+// 	}
  	
- 	/* Constructor enforces dependency injection on user variable
- 	 * 
- 	 *  @param user user obj this service is based off of
+ 	/**
+ 	 * FIXME, this is temporary implementation of a constructor that takes in all necessary repositories.
+ 	 * @param userRepo the user repository that contains all CRUD methods in addition to other queries provided by <code>UserRepository</code>
+ 	 * @param accountRepo the account repository that contains all CRUD methods in addition to other queries provided by <code>AccountRepository</code>
+ 	 * @param goalRepo
  	 */
- 	public UserService(User user) {
- 		this.user = user;
+ 	@Autowired
+ 	public UserService(UserRepository userRepo, AccountRepository accountRepo, GoalRepository goalRepo) {
+ 		this.userRepo = userRepo;
+ 		this.accountRepo = accountRepo;
+ 		this.goalRepo = goalRepo;
  	}
  	
  	
@@ -140,13 +157,13 @@ import org.springframework.beans.factory.annotation.Autowired;
  	// END ADD ACCOUNT
  	
  	
- 	public String getAllAccountsAsJSON() {
- 		List<Account> accs = user.getAccounts();
- 		
- 		for(Account a : accs) {
- 			
- 		}
- 	}
+// 	public String getAllAccountsAsJSON() {
+// 		List<Account> accs = user.getAccounts();
+// 		
+// 		for(Account a : accs) {
+// 			
+// 		}
+// 	}
  	
  	
  	
