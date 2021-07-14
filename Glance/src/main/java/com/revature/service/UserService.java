@@ -2,6 +2,7 @@
  
  import java.util.List;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
  import org.springframework.beans.factory.annotation.Qualifier;
  import org.springframework.stereotype.Service;
@@ -31,29 +32,21 @@ import org.springframework.beans.factory.annotation.Autowired;
  	 * 
  	 */
  	
-	 //FIXME Temporarily adding UserRepo as a parameter for the UserService class.
-	 private UserRepository userRepo;
-	 private AccountRepository accountRepo;
-	 private GoalRepository goalRepo;
- 	
  		/* DECLARE VARIABLES */
- 	
-		/*
-		 * needs to be constructor initialized I dont think this needs to be "injected",
-		 * simply needs to be passed in the getBeans method with args
-		 */
 	
-	
+	 //Does not need to be "injected" - user is a PARAMETER, not a dependency and is 
+	 //thus inherently injected upon construction of user service
  	private User user;
  	
-// 	 Can be autowired - all userDAO's should be the same
+ 	//Can be autowired - all userRepo's should be the same
  	@Autowired
- 	@Qualifier("UserDAOImpl")
- 	private static UserDAOImpl userDAO;
+ 	private static UserRepository userRepo;
  	
  	@Autowired
- 	@Qualifier("AccDAOImpl")
- 	private static AccountDAOImpl accDAO;
+ 	private static AccountRepository accRepo;
+ 	
+ 	@Autowired
+ 	private static GoalRepository goalRepo;
  	
  	//connection Util supplies connections to the API
  	private static APIAccessUtil plaidUtil;
@@ -70,13 +63,13 @@ import org.springframework.beans.factory.annotation.Autowired;
  	/**
  	 * FIXME, this is temporary implementation of a constructor that takes in all necessary repositories.
  	 * @param userRepo the user repository that contains all CRUD methods in addition to other queries provided by <code>UserRepository</code>
- 	 * @param accountRepo the account repository that contains all CRUD methods in addition to other queries provided by <code>AccountRepository</code>
+ 	 * @param accRepo the account repository that contains all CRUD methods in addition to other queries provided by <code>accRepository</code>
  	 * @param goalRepo
  	 */
  	@Autowired
- 	public UserService(UserRepository userRepo, AccountRepository accountRepo, GoalRepository goalRepo) {
+ 	public UserService(UserRepository userRepo, AccountRepository accRepo, GoalRepository goalRepo) {
  		this.userRepo = userRepo;
- 		this.accountRepo = accountRepo;
+ 		this.accRepo = accRepo;
  		this.goalRepo = goalRepo;
  	}
  	
@@ -89,7 +82,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  	/* Attempts to log in a user by checking the entered email and password
  	 * against our saved quantites in the db, users table
  	 * 
- 	 *  returns JSON STRING of User if the email exists AND the password matches
+ 	 *  returns User if the email exists AND the password matches
  	 *  
  	 *  @param email string of users email in the db
  	 *  @param password string of users password in the db
@@ -97,42 +90,30 @@ import org.springframework.beans.factory.annotation.Autowired;
  	 *  Throws NoSuchTuple and InvalidPassword Exceptions
  	 * 		- These will be handled by passing an error code to the front end
  	 */
- 	public static String login(String email, String password) throws NoSuchTupleException {
+ 	public static User login(String email, String password) throws NoSuchTupleException, InvalidPasswordException {
  		
- 		User u = userDAO.getUserByEmail(email);
+ 		User u = userRepo.findUserByEmail(email);
+ 		
+ 		if(u != null) {
+ 			System.out.println("ATTEMPING TO LOG USER IN: ");
+ 	 		System.out.println("\t Entered Pass: " + password);
+ 	 		System.out.println("\t Hashed Pass: " + BCrypt.hashpw(password, BCrypt.gensalt()));
+ 	 		System.out.println("\t Pass in DB: " + u.getPassword());
+ 	 		System.out.println();
+ 		}
  		
  		
  		 //check if u is null or if exception is thrown
  		if(u == null) {
- 			throw new NoSuchTupleException("No tuple with this email in DB");
+ 			throw new NoSuchTupleException("No User found with this email.");
+ 		} if(u.getPassword().equals(BCrypt.hashpw(password, BCrypt.gensalt()))) { 
+ 			return u; 
+ 		} else {
+ 			throw new InvalidPasswordException("Password did not match user account on record.");
  		}
- 		
- 		// test if passwords match - need an encrypting dependency
-		/*
-		 * if(u.getPassword().equals(Spring.hashPassword(password))) { return u; }
-		 * throw new InvalidPasswordException("Password did not match account");
-		 */	
- 		
- 		return null;
+		  
  	}
- 	
- 	//FIXME Literally just an example of using the userRepo to access the email, get the password, and compare them.
- 	public String login2(String email, String password) {
- 		User u = userRepo.findUserByEmail(email);
- 		
- 		if(u == null)
- 			throw new ResourceNotFoundException();
- 		
- 		//Check the password against what is in the DB
- 		String userPass = userRepo.findPasswordById(u.getId());
- 		
- 		if(userPass.equals(password))
- 			return "The user was able to login";
- 		else throw new InvalidPasswordException("Password did not match account");
- 	}
- 	//END METHOD LOGIN
- 	
- 	
+ 
  	/* Attempts to create a new User Account with the provided information
  	 * 
  	 *  returns JSON STRING of User tuple that is now stored in the database
@@ -142,28 +123,26 @@ import org.springframework.beans.factory.annotation.Autowired;
  	 *  
  	 *  THROWS ExistingAccountException
  	 */
- 	public static String createNewUser(User info) {
+ 	public static User createNewUser(User info) throws ExistingAccountException, IllegalArgumentException {
  		
  		 //Pass all relevant users signup info
  		
  		 //May need to add extra paramater for plaid info
- 		
- 		 //save User to db using DAO
- 		
- 		/*
- 		 
+ 		 User saved = null;
  		try {
- 			//int savedID = userDAO.save(info);
- 		} catch(Exception e) {
+ 	 		 //save User to db using DAO
+ 			saved = userRepo.save(info);
+ 		} catch(IllegalArgumentException e) {
  			//Any number of errors this could fail to save, we are concerned with:
- 				// - EmailAlreadyExistsException
- 				//Throw new ExistingAccountException("Account already exists with these values");
+ 			if(userRepo.findUserByEmail(info.getEmail()) != null) {
+ 				throw new ExistingAccountException("Problem creating account: A user already exists with this email");
+ 			} else {
+ 				throw new IllegalArgumentException("Unkown problem creating account");
+ 			}
+ 			
  		}
- 		*/
  		
- 		//GET user by id using its id and return this object
- 			//return userDAO.getByID(savedID);
- 		return null;
+ 		return saved;
  	
  	}
  	 //END CREATE NEW USER METHOD 
@@ -178,20 +157,30 @@ import org.springframework.beans.factory.annotation.Autowired;
  	 */
  	public void loadAccounts() {
  		
- 		 //List<Account> accs = user.getAllAccounts();
+ 		 List<Account> accs = user.getAccounts();
  		
- 		/*for(Account a : accs) {
- 		 * 		plaidUtil.loadAccountData(a);
- 		 * }
- 		 */
- 		
+ 		for(Account a : accs) {
+ 		  		//plaidUtil.loadAccountData(a);
+ 		  }
+ 		 	
  	}
  	 //END LOAD ACCOUNTS
  	
+ 	
+ 	/**
+ 	 * @param plaidAccountId - some personal identifier specific to the user
+ 	 * @param accesstoken	- 	the bank specific accesstoken the user has acquired from plaid
+ 	 * 
+ 	 * @return JSON String of new Account added
+ 	 */
  	public Account addAccount(String plaidAccountId, String accesstoken) {
 		 //get the account from Plaid
 			// String returnInfo = plaidUtil.findAccount(accesstoken);
 		
+ 		//Will likely have to split return info into array since access tokens are
+ 		//specific to BANKS, not independent accounts
+ 			//String[] accs = returnInfo.split();
+ 		
 		 //build account type from returninfo
 			 //Account = new Account(returnInfo);
 		
@@ -219,7 +208,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
  	
  	public String getAccountAsJSON(int internalID) {
- 		//return accDAO.findById(internalID).stringAsJSON();
+ 		//return accRepo.findById(internalID).stringAsJSON();
  		return null;
  	}// END GETACCOUNTASJSON
  	
