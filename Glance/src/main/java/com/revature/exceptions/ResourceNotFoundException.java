@@ -1,5 +1,12 @@
 package com.revature.exceptions;
 
+
+/*
+ * Exception thrown when a front end resource
+ * like a webpage was unable to be found
+ */
+
+
 public class ResourceNotFoundException extends GlanceException{
 	
 	private static final long serialVersionUID = 5220673095319043199L;

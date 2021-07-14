@@ -13,6 +13,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 
+import org.springframework.stereotype.Component;
+
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,6 +41,7 @@ import lombok.Setter;
  */
 @Data @NoArgsConstructor 
 @Entity @Table(name="users")
+@Component
 public class User {
 	
 	@Id @Column(name="user_id")
