@@ -42,8 +42,14 @@ import org.springframework.transaction.annotation.Transactional;
  	private User user;
  	
  	
- 	private UserRepository userRepo;
- 	private AccountRepository accRepo;
+ 	@Autowired
+ 	private static UserRepository userRepo;
+ 	
+ 	@Autowired
+ 	private static AccountRepository accRepo;
+ 	
+ 	@Autowired
+ 	private static GoalRepository goalRepo;
  	
  	
 //FIXME Temporarly commenting this out in order to test the functionality of UserRepository. 	
@@ -51,24 +57,10 @@ import org.springframework.transaction.annotation.Transactional;
 // 	 * 
 // 	 *  @param user user obj this service is based off of
 // 	 */
-// 	public UserService(User user) {
-// 		this.user = user;
-// 	}
  	
- 	/**
- 	 * FIXME, this is temporary implementation of a constructor that takes in all necessary repositories.
- 	 * @param userRepo the user repository that contains all CRUD methods in addition to other queries provided by <code>UserRepository</code>
- 	 * @param accRepo the account repository that contains all CRUD methods in addition to other queries provided by <code>accRepository</code>
- 	 * @param goalRepo
- 	 */
- 	@Autowired
- 	public UserService(UserRepository userRepo, AccountRepository accRepo, GoalRepository goalRepo) {
- 		this.userRepo = userRepo;
- 		this.accRepo = accRepo;
- 	}
- 	
- 	
- 	
+public UserService(User user) {
+		this.user = user;
+}
  	
  		/* DECLARE METHODS */
  	
@@ -84,7 +76,7 @@ import org.springframework.transaction.annotation.Transactional;
  	 *  Throws NoSuchTuple and InvalidPassword Exceptions
  	 * 		- These will be handled by passing an error code to the front end
  	 */
- 	public User login(String email, String password) throws NoSuchTupleException, InvalidPasswordException {
+ 	public static User login(String email, String password) throws NoSuchTupleException, InvalidPasswordException {
  		
  		User u = userRepo.findUserByEmail(email);
  		
@@ -100,7 +92,8 @@ import org.springframework.transaction.annotation.Transactional;
  		 //check if u is null or if exception is thrown
  		if(u == null) {
  			throw new NoSuchTupleException("No User found with this email.");
- 		} if(u.getPassword().equals(BCrypt.hashpw(password, BCrypt.gensalt()))) { 
+ 		} if(u.getPassword().equals(BCrypt.hashpw(password, BCrypt.gensalt()))) {
+ 			//set internal user to logged in value
  			return u; 
  		} else {
  			throw new InvalidPasswordException("Password did not match user account on record.");
@@ -117,7 +110,7 @@ import org.springframework.transaction.annotation.Transactional;
  	 *  
  	 *  THROWS ExistingAccountException
  	 */
- 	public User createNewUser(User info) throws ExistingAccountException, IllegalArgumentException {
+ 	public static User createNewUser(User info) throws ExistingAccountException, IllegalArgumentException {
  		
  		 //Pass all relevant users signup info
  		
