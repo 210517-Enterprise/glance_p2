@@ -76,30 +76,31 @@ public UserService(User user) {
  	 *  Throws NoSuchTuple and InvalidPassword Exceptions
  	 * 		- These will be handled by passing an error code to the front end
  	 */
- 	public User login(String email, String password) throws NoSuchTupleException, InvalidPasswordException {
- 		
- 		User u = userRepo.findUserByEmail(email);
- 		
- 		if(u != null) {
- 			System.out.println("ATTEMPING TO LOG USER IN: ");
- 	 		System.out.println("\t Entered Pass: " + password);
- 	 		System.out.println("\t Hashed Pass: " + BCrypt.hashpw(password, BCrypt.gensalt()));
- 	 		System.out.println("\t Pass in DB: " + u.getPassword());
- 	 		System.out.println();
- 		}
- 		
- 		
- 		 //check if u is null or if exception is thrown
- 		if(u == null) {
- 			throw new NoSuchTupleException("No User found with this email.");
- 		} if(u.getPassword().equals(BCrypt.hashpw(password, BCrypt.gensalt()))) {
- 			//set internal user to logged in value
- 			return u; 
- 		} else {
- 			throw new InvalidPasswordException("Password did not match user account on record.");
- 		}
-		  
- 	}
+public User login(String email, String password) throws NoSuchTupleException, InvalidPasswordException {
+    
+    User u = userRepo.findUserByEmail(email);
+    
+    if(u != null) {
+        System.out.println("ATTEMPING TO LOG USER IN: ");
+         System.out.println("\t Entered Pass: " + password);
+         System.out.println("\t Hashed Pass: " + BCrypt.hashpw(password, BCrypt.gensalt()));
+         System.out.println("\t Pass in DB: " + u.getPassword());
+         System.out.println();
+    }
+    
+    
+     //check if u is null or if exception is thrown
+    if(u == null) {
+        throw new NoSuchTupleException("No User found with this email.");
+    } if(BCrypt.checkpw(password, u.getPassword())) {
+        //set internal user to logged in value
+        System.out.println("Login Successful, returning user");
+        return u; 
+    } else {
+        throw new InvalidPasswordException("Password did not match user account on record.");
+    }
+     
+}
  
  	/* Attempts to create a new User Account with the provided information
  	 * 
