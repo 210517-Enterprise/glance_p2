@@ -2,9 +2,10 @@
  
  import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-
+import java.util.Set;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.plaid.client.model.AccountBase;
 import com.plaid.client.model.AccountsGetResponse;
+import com.plaid.client.model.Transaction;
+import com.plaid.client.model.TransactionsGetResponse;
 import com.revature.controller.PlaidController;
 //Project Imports
  import com.revature.entities.*;
@@ -51,7 +54,7 @@ import com.revature.controller.PlaidController;
  	private GoalRepository goalRepo;
  	
  	@Autowired
- 	private PlaidController PlaidUtil;
+ 	private PlaidController plaidUtil;
  	
  	 	
  		/* DECLARE METHODS */
@@ -145,7 +148,7 @@ import com.revature.controller.PlaidController;
 		 //get the account from Plaid
  		AccountsGetResponse returnInfo = null;
 			try {
-				 returnInfo = PlaidUtil.getAccounts(accesstoken);
+				 returnInfo = plaidUtil.getAccounts(accesstoken);
 			} catch (IOException e) {
 				throw new PlaidException("Problem reading account data from Plaid with this accessToken");
 			}
@@ -205,13 +208,11 @@ import com.revature.controller.PlaidController;
 					String accInfo = getAccount(a.getId());
 					accData.add(accInfo);
 				} catch (NoSuchTupleException e) {
-					
+					//Continue to next account
 				}
  		  }
  		//END FOR
- 		
-		return accData;
- 	 		 
+		return accData;	 
  	}
  	//END GET ALL ACCOUNTS
 
@@ -224,7 +225,7 @@ import com.revature.controller.PlaidController;
  		
  		if(a.isPresent()) {
  			try {
-				AccountsGetResponse returnInfo = PlaidUtil.getAccounts(a.get().getPlaidItem());
+				AccountsGetResponse returnInfo = plaidUtil.getAccounts(a.get().getPlaidItem());
 				
 	 			for (AccountBase ab : returnInfo.getAccounts()) 
 	 			{
@@ -233,64 +234,28 @@ import com.revature.controller.PlaidController;
 	 				//but the value on their end is subject to change so this may have to be modified
 	 				//so we know how to match their account with OUR internall account instance
 					if(ab.getAccountId().equals(a.get().getPlaidKey())) {
+						System.out.println("------------------------------------------\n");
 						System.out.println("Info from Plaid on account: \n");
 						ab.toString();
+						System.out.println("------------------------------------------\n");
 						return ab.toString();
 					}
 				}
-	 			//END FOR
+	 			//END FOR, exception thrown if we reach here
 	 			
-	 			//if there is no matching account with this Plaid item, we may need to refresh our accounts
-	 			return refreshAccounts(internalID);
-				
 			} catch (IOException e) {
 				throw new PlaidException("Problem reading account data from Plaid with this accessToken");
 			}
  			
- 		} else {
- 			throw new NoSuchTupleException("Could not find account with ID: " + internalID);
  		}
+ 		
+ 		//If we reach here the account was not present or has no matching plaid key
+ 		throw new NoSuchTupleException("Could not find account with ID: " + internalID);
  		
  	}
  	// END GETACCOUNT
  	
  	
- 	private String refreshAccounts(int internalID) throws PlaidException, NoSuchTupleException {
- 		
- 		/*  - Load all accounts tethered to "access token" of account with this internalID
- 		 * 	- 
- 		 *  - return account with this particular internal ID (on our end) 
- 		 */
- 		
- 		//get copy of account with accessToken (plaidItem) 
- 		String accessToken = accRepo.findPlaidItemById(internalID);
- 		
- 		List<AccountBase> newAccs = new ArrayList<>();
- 		List<Account> existing = accRepo.findAccountByPlaidItem(accessToken);
- 		
- 		if(existing == null) {
- 			throw new NoSuchTupleException("No accounts found for this access token");
- 		}
- 		
- 		//Compare accountID's with
- 		AccountsGetResponse returnInfo = null;
-		try {
-			 returnInfo = PlaidUtil.getAccounts(accessToken);
-			 newAccs = returnInfo.getAccounts();
-			 AccountBase missing = null;
-			 String missingKey = 0;
-			 
-			 for (AccountBase ab : newAccs) {
-				 
-			 }
-			 
-			 
-		} catch (IOException e) {
-			throw new PlaidException("Problem reading account data from Plaid with this accessToken");
-		}
- 		
- 		return null;
- 	}
  	
  	
  	
@@ -298,8 +263,29 @@ import com.revature.controller.PlaidController;
  	 * @param internalID - internal ID of account that we desire transactions for
  	 * @return - List, in JSON form, of recent transactions associated with this account
  	 */
- 	public List<String> getTransactionsForAccount(int internalID) throws NoSuchTupleException, PlaidException {
- 	
+ 	public List<String> getTransactionsForAccount(int internalID) throws NoSuchTupleException, PlaidException 
+ 	{
+ 		/*
+ 		 * Return transactions for a particular account
+ 		 * 
+ 		 */
+ 		
+ 		try {
+			TransactionsGetResponse transactions = plaidUtil.getTransactions(accRepo.findPlaidItemById(internalID));
+			
+			List<Transaction> temp = transactions.getTransactions();
+			List<String> transactionsList = new ArrayList<>();
+			
+			for(Transaction t : temp) {
+				if (accRepo.findPlaidKeyById(internalID) == t.getAccountId()) {
+					transactionsList.add(t.toString());
+				}
+			}
+			
+			
+		} catch (IOException e) {
+			throw new PlaidException("Problem reading account data from Plaid with this accessToken");
+		}
  		return null;
  	}
  	
