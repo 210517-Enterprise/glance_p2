@@ -23,4 +23,7 @@ public interface AccountRepository extends JpaRepository<Account, Integer>{
 	
 	@Query(value="select a.plaidKey from Account a where a.id=:id")
 	String findPlaidKeyById(int id);
+	
+	@Query(value="update Account a set a.plaidKey=:plaidKey where a.id=:id")
+	String updatePlaidKeyById(int id, String plaidKey);
 }
