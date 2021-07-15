@@ -40,7 +40,7 @@ public class MainController {
 		model.addAttribute("user",user);
 		System.out.println(user);
 		try {
-			User foundUser = UserService.login(user.getEmail(), user.getPassword());
+			User foundUser = userService.login(user.getEmail(), user.getPassword());
 			return ResponseEntity.ok(foundUser);
 		} catch (InvalidPasswordException | NoSuchTupleException e) {
 			return ResponseEntity.notFound().build();

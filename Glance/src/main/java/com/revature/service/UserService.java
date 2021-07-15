@@ -43,13 +43,13 @@ import org.springframework.transaction.annotation.Transactional;
  	
  	
  	@Autowired
- 	private static UserRepository userRepo;
+ 	private UserRepository userRepo;
  	
  	@Autowired
- 	private static AccountRepository accRepo;
+ 	private AccountRepository accRepo;
  	
  	@Autowired
- 	private static GoalRepository goalRepo;
+ 	private GoalRepository goalRepo;
  	
  	
 //FIXME Temporarly commenting this out in order to test the functionality of UserRepository. 	
@@ -76,7 +76,7 @@ public UserService(User user) {
  	 *  Throws NoSuchTuple and InvalidPassword Exceptions
  	 * 		- These will be handled by passing an error code to the front end
  	 */
- 	public static User login(String email, String password) throws NoSuchTupleException, InvalidPasswordException {
+ 	public User login(String email, String password) throws NoSuchTupleException, InvalidPasswordException {
  		
  		User u = userRepo.findUserByEmail(email);
  		
@@ -110,7 +110,7 @@ public UserService(User user) {
  	 *  
  	 *  THROWS ExistingAccountException
  	 */
- 	public static User createNewUser(User info) throws ExistingAccountException, IllegalArgumentException {
+ 	public User createNewUser(User info) throws ExistingAccountException, IllegalArgumentException {
  		
  		 //Pass all relevant users signup info
  		
