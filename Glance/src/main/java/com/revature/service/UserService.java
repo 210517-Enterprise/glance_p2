@@ -63,31 +63,32 @@ import org.springframework.transaction.annotation.Transactional;
  	 * @throws NoSuchTupleException	- if email is not found in DB
  	 * @throws InvalidPasswordException - if password does not match email for found account 
  	 */
- 	public User login(String email, String password) throws NoSuchTupleException, InvalidPasswordException {
- 		
- 		User u = userRepo.findUserByEmail(email);
- 		
- 		if(u != null) {
- 			System.out.println("ATTEMPING TO LOG USER IN: ");
- 	 		System.out.println("\t Entered Pass: " + password);
- 	 		System.out.println("\t Hashed Pass: " + BCrypt.hashpw(password, BCrypt.gensalt()));
- 	 		System.out.println("\t Pass in DB: " + u.getPassword());
- 	 		System.out.println();
- 		}
- 		
- 		
- 		 //check if u is null or if exception is thrown
- 		if(u == null) {
- 			throw new NoSuchTupleException("No User found with this email.");
- 		} if(u.getPassword().equals(BCrypt.hashpw(password, BCrypt.gensalt()))) {
- 			//set internal user to logged in value
- 			return u; 
- 		} else {
- 			throw new InvalidPasswordException("Password did not match user account on record.");
- 		}
-		  
- 	}
-	//END USER LOGIN
+public User login(String email, String password) throws NoSuchTupleException, InvalidPasswordException {
+    
+    User u = userRepo.findUserByEmail(email);
+    
+    if(u != null) {
+        System.out.println("ATTEMPING TO LOG USER IN: ");
+         System.out.println("\t Entered Pass: " + password);
+         System.out.println("\t Hashed Pass: " + BCrypt.hashpw(password, BCrypt.gensalt()));
+         System.out.println("\t Pass in DB: " + u.getPassword());
+         System.out.println();
+    }
+    
+    
+     //check if u is null or if exception is thrown
+    if(u == null) {
+        throw new NoSuchTupleException("No User found with this email.");
+    } if(BCrypt.checkpw(password, u.getPassword())) {
+        //set internal user to logged in value
+        System.out.println("Login Successful, returning user");
+        return u; 
+    } else {
+        throw new InvalidPasswordException("Password did not match user account on record.");
+    }
+     
+}
+>>>>>>> 48d3d6d0dfd293eca89c690cf2eb50b9d0f65862
  
  	/* Attempts to create a new User Account with the provided information
  	 * 
