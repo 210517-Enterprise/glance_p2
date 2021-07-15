@@ -4,21 +4,22 @@
 import java.util.List;
 import java.util.Optional;
 
+
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
- import org.springframework.beans.factory.annotation.Qualifier;
  import org.springframework.stereotype.Service;
- 
-  //Project Imports
+import org.springframework.transaction.annotation.Transactional;
+
+//Project Imports
  import com.revature.entities.*;
  import com.revature.repositories.*;
  import com.revature.exceptions.*;
- import com.revature.util.APIAccessUtil;
  
   //Other Imports
  
  
  @Service
+ @Transactional
  public class UserService {
  
  	/*
@@ -40,18 +41,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 	 //thus inherently injected upon construction of user service
  	private User user;
  	
- 	//Can be autowired - all userRepo's should be the same
- 	@Autowired
- 	private static UserRepository userRepo;
  	
- 	@Autowired
- 	private static AccountRepository accRepo;
+ 	private UserRepository userRepo;
+ 	private AccountRepository accRepo;
  	
- 	@Autowired
- 	private static GoalRepository goalRepo;
- 	
- 	//connection Util supplies connections to the API
- 	private static APIAccessUtil plaidUtil;
  	
 //FIXME Temporarly commenting this out in order to test the functionality of UserRepository. 	
 // 	/* Constructor enforces dependency injection on user variable
@@ -72,7 +65,6 @@ import org.springframework.beans.factory.annotation.Autowired;
  	public UserService(UserRepository userRepo, AccountRepository accRepo, GoalRepository goalRepo) {
  		this.userRepo = userRepo;
  		this.accRepo = accRepo;
- 		this.goalRepo = goalRepo;
  	}
  	
  	
@@ -92,7 +84,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  	 *  Throws NoSuchTuple and InvalidPassword Exceptions
  	 * 		- These will be handled by passing an error code to the front end
  	 */
- 	public static User login(String email, String password) throws NoSuchTupleException, InvalidPasswordException {
+ 	public User login(String email, String password) throws NoSuchTupleException, InvalidPasswordException {
  		
  		User u = userRepo.findUserByEmail(email);
  		
@@ -125,7 +117,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  	 *  
  	 *  THROWS ExistingAccountException
  	 */
- 	public static User createNewUser(User info) throws ExistingAccountException, IllegalArgumentException {
+ 	public User createNewUser(User info) throws ExistingAccountException, IllegalArgumentException {
  		
  		 //Pass all relevant users signup info
  		
