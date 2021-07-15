@@ -52,6 +52,10 @@ public class PlaidController {
 		this.plaidClient = apiClient.createService(PlaidApi.class);
 	}
 	
+	/**
+	 * Retrieves link token
+	 * @return LinkToken
+	 */
 	@PostMapping(value="linktoken/create", produces = MediaType.APPLICATION_JSON_VALUE)
 	public LinkToken createToken () throws IOException {
 		String clientUserId = Long.toString((new Date()).getTime());
@@ -72,7 +76,11 @@ public class PlaidController {
 	}
 	
 
-	
+	/**
+	 * Retrieves access token
+	 * @param String publicToken
+	 * @return String [] of accessToken and itemId
+	 */
 	@PostMapping(value="linktoken/exchange")
 	public String[] exchangeToken(@RequestBody String publicToken) throws IOException {
 		System.out.println(publicToken);
@@ -93,6 +101,11 @@ public class PlaidController {
 		return access_tokens;
 	}
 	
+	/**
+	 * Retrieves account balances
+	 * @param String accessToken
+	 * @return account balance as json String
+	 */
 	@GetMapping(value="balances/get")
 	public AccountsGetResponse getAccounts(@RequestBody String accessToken) throws IOException {
 	    AccountsBalanceGetRequest request = new AccountsBalanceGetRequest()
@@ -119,6 +132,11 @@ public class PlaidController {
 	    }
 	  }
 	
+	/**
+	 * Retrieves account transactions
+	 * @param String accessToken
+	 * @return account transactions as json String
+	 */
 	@PostMapping(value="transactions/get")
 	public TransactionsGetResponse getTransactions(String accessToken) throws IOException {
 	    LocalDate startDate = LocalDate.now().minusDays(30);
