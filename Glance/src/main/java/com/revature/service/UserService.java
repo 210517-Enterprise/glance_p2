@@ -1,6 +1,7 @@
  package com.revature.service;
  
- import java.util.ArrayList;
+ import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
  import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.plaid.client.model.AccountBase;
+import com.plaid.client.model.AccountsGetResponse;
+import com.revature.controller.PlaidController;
 //Project Imports
  import com.revature.entities.*;
  import com.revature.repositories.*;
@@ -46,6 +50,9 @@ import org.springframework.transaction.annotation.Transactional;
  	@Autowired
  	private GoalRepository goalRepo;
  	
+ 	@Autowired
+ 	private PlaidController PlaidUtil;
+ 	
  	 	
  		/* DECLARE METHODS */
  	public UserService() {
@@ -63,31 +70,32 @@ import org.springframework.transaction.annotation.Transactional;
  	 * @throws NoSuchTupleException	- if email is not found in DB
  	 * @throws InvalidPasswordException - if password does not match email for found account 
  	 */
-public User login(String email, String password) throws NoSuchTupleException, InvalidPasswordException {
-    
-    User u = userRepo.findUserByEmail(email);
-    
-    if(u != null) {
-        System.out.println("ATTEMPING TO LOG USER IN: ");
-         System.out.println("\t Entered Pass: " + password);
-         System.out.println("\t Hashed Pass: " + BCrypt.hashpw(password, BCrypt.gensalt()));
-         System.out.println("\t Pass in DB: " + u.getPassword());
-         System.out.println();
-    }
-    
-    
-     //check if u is null or if exception is thrown
-    if(u == null) {
-        throw new NoSuchTupleException("No User found with this email.");
-    } if(BCrypt.checkpw(password, u.getPassword())) {
-        //set internal user to logged in value
-        System.out.println("Login Successful, returning user");
-        return u; 
-    } else {
-        throw new InvalidPasswordException("Password did not match user account on record.");
-    }
-     
-}
+	public User login(String email, String password) throws NoSuchTupleException, InvalidPasswordException {
+	    
+	    User u = userRepo.findUserByEmail(email);
+	    
+	    if(u != null) {
+	        System.out.println("ATTEMPING TO LOG USER IN: ");
+	         System.out.println("\t Entered Pass: " + password);
+	         System.out.println("\t Hashed Pass: " + BCrypt.hashpw(password, BCrypt.gensalt()));
+	         System.out.println("\t Pass in DB: " + u.getPassword());
+	         System.out.println();
+	    }
+	    
+	    
+	     //check if u is null or if exception is thrown
+	    if(u == null) {
+	        throw new NoSuchTupleException("No User found with this email.");
+	    } if(BCrypt.checkpw(password, u.getPassword())) {
+	        //set internal user to logged in value
+	        System.out.println("Login Successful, returning user");
+	        return u; 
+	    } else {
+	        throw new InvalidPasswordException("Password did not match user account on record.");
+	    }
+	     
+	}
+//END LOGIN METHOD
 
  
  	/* Attempts to create a new User Account with the provided information
@@ -103,7 +111,7 @@ public User login(String email, String password) throws NoSuchTupleException, In
  		
  		 //Pass all relevant users signup info
  		
- 		 //May need to add extra paramater for plaid info
+ 		 //May need to add extra paramater for Plaid info
  		 User saved = null;
  		 info.setPassword(BCrypt.hashpw(info.getPassword(), BCrypt.gensalt()));
  		try {
@@ -127,26 +135,58 @@ public User login(String email, String password) throws NoSuchTupleException, In
 
  	
  	/**
- 	 * @param plaidAccountId - some personal identifier specific to the user
- 	 * @param accesstoken	- 	the bank specific accesstoken the user has acquired from plaid
+ 	 * @param PlaidAccountId - some personal identifier specific to the user
+ 	 * @param accesstoken	- 	the bank specific accesstoken the user has acquired from Plaid
  	 * 
- 	 * @return JSON String of new Account added
+ 	 * @return List<Account> of new Account added
+ 	 * @throws NoExistingAccountsException, NoSuchTupleException, PlaidException,
  	 */
- 	public Account addAccount(String internalUserID, String accesstoken) throws NoSuchTupleException, PlaidException {
+ 	public List<Account> addAccounts(int internalUserID, String accesstoken) throws NoSuchTupleException, PlaidException, NoExistingAccountsException {
 		 //get the account from Plaid
-			// String returnInfo = plaidUtil.findAccount(accesstoken);
+ 		AccountsGetResponse returnInfo = null;
+			try {
+				 returnInfo = PlaidUtil.getAccounts(accesstoken);
+			} catch (IOException e) {
+				throw new PlaidException("Problem reading account data from Plaid with this accessToken");
+			}
 		
- 		//Will likely have to split return info into array since access tokens are
+ 		//Will likely have to split return info into list since access tokens are
  		//specific to BANKS, not independent accounts
- 			//String[] accs = returnInfo.split();
- 		
+		List<AccountBase> accs = returnInfo.getAccounts();
+		List<Account> loadedAccounts = new ArrayList<>();
+
 		 //build account type from returninfo
-			 //Account = new Account(returnInfo);
+			 for (AccountBase accountBase : accs) {
+				
+				 try {
+					User u = userRepo.findUserById(internalUserID);
+					if(u == null) {
+						throw new NoSuchTupleException("Failed to find user with this internal ID");
+					}
+					
+					//save account info with accountsDAO
+					Account a = new Account(accesstoken, accountBase.getAccountId(), u);
+					Account savedAcc = accRepo.save(a);
+					
+					if(savedAcc == null) {
+						throw new IllegalArgumentException();
+					}
+					
+					loadedAccounts.add(savedAcc);
+				} catch (IllegalArgumentException e) {
+					//Code will continue, try to add next accounts
+				}
+				
+			}
+			 //END FOR
+			 
+			 //Need to check if no new accounts were found - especially if the user already tried to add
+			 //these accounts and attempting to save them to the db would violate unique constraints.
+			 if(loadedAccounts.isEmpty()) {
+				 throw new NoExistingAccountsException("No new accounts associated with this access token and account ID");
+			 }
 		
-		 //save account info with accountsDAO
- 		
- 		
-		return null;
+		return loadedAccounts;
  	}
  	// END ADD ACCOUNT
  	
@@ -154,7 +194,7 @@ public User login(String email, String password) throws NoSuchTupleException, In
  	 * 
  	 *  returns void
  	 *  
- 	 *  THROWS plaidException if there is an error with plaid
+ 	 *  THROWS PlaidException if there is an error with Plaid
  	 */
  	public List<String> getAllAccounts(int internalUserID) throws NoSuchTupleException, PlaidException {	
  		 List<Account> accs = accRepo.findAccountByUserId(internalUserID);
@@ -176,18 +216,81 @@ public User login(String email, String password) throws NoSuchTupleException, In
  	//END GET ALL ACCOUNTS
 
  	
+ 	
+ 	
  	public String getAccount(int internalID) throws NoSuchTupleException, PlaidException {
  		
  		Optional<Account> a = accRepo.findById(internalID);
  		
  		if(a.isPresent()) {
- 			//String returnInfo = plaidUtil.findAccount(a.get().getPlaidKey());
- 			return null;
+ 			try {
+				AccountsGetResponse returnInfo = PlaidUtil.getAccounts(a.get().getPlaidItem());
+				
+	 			for (AccountBase ab : returnInfo.getAccounts()) 
+	 			{
+	 				
+	 				//What we call PlaidKey is what they call their unique Plaid ID
+	 				//but the value on their end is subject to change so this may have to be modified
+	 				//so we know how to match their account with OUR internall account instance
+					if(ab.getAccountId().equals(a.get().getPlaidKey())) {
+						System.out.println("Info from Plaid on account: \n");
+						ab.toString();
+						return ab.toString();
+					}
+				}
+	 			//END FOR
+	 			
+	 			//if there is no matching account with this Plaid item, we may need to refresh our accounts
+	 			return refreshAccounts(internalID);
+				
+			} catch (IOException e) {
+				throw new PlaidException("Problem reading account data from Plaid with this accessToken");
+			}
+ 			
  		} else {
- 			throw new NoSuchTupleException("Error finding account with ID: " + internalID);
+ 			throw new NoSuchTupleException("Could not find account with ID: " + internalID);
  		}
  		
- 	}// END GETACCOUNTASJSON
+ 	}
+ 	// END GETACCOUNT
+ 	
+ 	
+ 	private String refreshAccounts(int internalID) throws PlaidException, NoSuchTupleException {
+ 		
+ 		/*  - Load all accounts tethered to "access token" of account with this internalID
+ 		 * 	- 
+ 		 *  - return account with this particular internal ID (on our end) 
+ 		 */
+ 		
+ 		//get copy of account with accessToken (plaidItem) 
+ 		String accessToken = accRepo.findPlaidItemById(internalID);
+ 		
+ 		List<AccountBase> newAccs = new ArrayList<>();
+ 		List<Account> existing = accRepo.findAccountByPlaidItem(accessToken);
+ 		
+ 		if(existing == null) {
+ 			throw new NoSuchTupleException("No accounts found for this access token");
+ 		}
+ 		
+ 		//Compare accountID's with
+ 		AccountsGetResponse returnInfo = null;
+		try {
+			 returnInfo = PlaidUtil.getAccounts(accessToken);
+			 newAccs = returnInfo.getAccounts();
+			 AccountBase missing = null;
+			 String missingKey = 0;
+			 
+			 for (AccountBase ab : newAccs) {
+				 
+			 }
+			 
+			 
+		} catch (IOException e) {
+			throw new PlaidException("Problem reading account data from Plaid with this accessToken");
+		}
+ 		
+ 		return null;
+ 	}
  	
  	
  	

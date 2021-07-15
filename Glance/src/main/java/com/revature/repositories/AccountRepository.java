@@ -18,6 +18,8 @@ public interface AccountRepository extends JpaRepository<Account, Integer>{
 	 */
 	List<Account> findAccountByUserId(int userId);
 	
+	List<Account> findAccountByPlaidItem(String plaidItem);
+	
 	@Query(value="select a.plaidItem from Account a where a.id=:id")
 	String findPlaidItemById(int id);
 	
