@@ -28,6 +28,17 @@ LIST OF TESTS TO BUILD PER CLASS:
 		- Test logic on getUserInfo()
 			- correct JSON string is returned
 
+	User u = new User("sampleEmail", "samplePass", null, null, null, null);
+		UserService.createNewUser(u);
+		User v = null;
+		try {
+			v = UserService.login(u.getEmail(), u.getPassword());
+		} catch (InvalidPasswordException | NoSuchTupleException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("the user is: " + v);
+		
 
 
 	NEXT_CLASS.JAVA
