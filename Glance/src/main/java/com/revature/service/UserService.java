@@ -194,15 +194,15 @@ import org.springframework.beans.factory.annotation.Autowired;
  	
  	public String getAllAccountsAsJSON() 
  	{
- 		/*List<Account> accs = user.getAllAccounts();
+ 		List<Account> accs = user.getAccounts();
  		StringBuilder sb = new StringBuilder();
  		
  		sb.append("[");
  		for(Account a : accs) {
  			sb.append(a.stringAsJSON());
  		}
- 		*/
- 		return null;
+ 		
+ 		return sb.toString();
  	}
  	//END GET ALL ACCOUNTS
 
