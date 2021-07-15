@@ -28,6 +28,7 @@ public interface UserRepository extends JpaRepository<User,Integer>{
 	 * @param email the email to query by.
 	 * @return A <code>User</code> object or <code>null</code> if no user was found.
 	 */
+	@Query(value = "SELECT u FROM User u WHERE u.email=:email")
 	User findUserByEmail(String email);
 	
 	/**

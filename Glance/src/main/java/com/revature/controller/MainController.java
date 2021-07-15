@@ -26,22 +26,21 @@ public class MainController {
 	 * 
 	 * Will direct resources to front-end for users
 	 */
-	private UserService userService;
+	private final UserService userService;
 	
 	@Autowired
 	public MainController(UserService userService) {
 		this.userService = userService;
 	}
 	
-	@PostMapping(value="login")
+	@PostMapping(value="/login")
 	public ResponseEntity<User> loginUser(@ModelAttribute User user, Model model){
 		model.addAttribute("user",user);
-		
+		System.out.println(user);
 		try {
 			User foundUser = userService.login(user.getEmail(), user.getPassword());
 			return ResponseEntity.ok(foundUser);
 		} catch (InvalidPasswordException | NoSuchTupleException e) {
-			e.printStackTrace();
 			return ResponseEntity.notFound().build();
 		}
 	}
