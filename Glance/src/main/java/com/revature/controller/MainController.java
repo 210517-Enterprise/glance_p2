@@ -9,12 +9,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 //Spring Web Includes
 import org.springframework.web.bind.annotation.RestController;
 
+//Glance Project Includes
 import com.revature.entities.User;
 import com.revature.exceptions.InvalidPasswordException;
 import com.revature.exceptions.NoSuchTupleException;
 import com.revature.service.UserService;
-
-//Glance Project Includes
 
 
 @RestController
@@ -54,11 +53,6 @@ public class MainController {
 		 * 	- InvalidPassWordException or
 		 *  - AccountAlreadyExists Exception in case of error
 		 *  
-		 *  Additionally, the createNewUser and login methods are intended to be static
-		 *  as they are not associated with an internal user account - an INSTANCE of 
-		 *  userService should *always* we associated with a logged in user, else
-		 *  we would have no reference of who's data to draw
-		 *  
 		 *  Whatever value (exception or otherwise) emerges from User service
 		 *  should be wrapped in EntityWrapper with an error code and message
 		 *  erro code 0 for no error, and a null message and then the data
@@ -91,7 +85,7 @@ public class MainController {
 		
 		model.addAttribute("user", user);
 		
-		User createdUser = UserService.createNewUser(user);
+		User createdUser = userService.createNewUser(user);
 		
 		if(createdUser == null) {
 			return ResponseEntity.notFound().build();

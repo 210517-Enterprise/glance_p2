@@ -1,4 +1,4 @@
-package com.revature.controller;
+package com.revature;
 
 //Spring Web Includes
 import org.springframework.web.bind.annotation.ControllerAdvice;

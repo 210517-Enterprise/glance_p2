@@ -36,11 +36,6 @@ import org.springframework.transaction.annotation.Transactional;
  	 */
  	
  		/* DECLARE VARIABLES */
-	
-	 //Does not need to be "injected" - user is a PARAMETER, not a dependency and is 
-	 //thus inherently injected upon construction of user service
- 	private User user;
- 	
  	
  	@Autowired
  	private static UserRepository userRepo;
@@ -51,18 +46,12 @@ import org.springframework.transaction.annotation.Transactional;
  	@Autowired
  	private static GoalRepository goalRepo;
  	
- 	
-//FIXME Temporarly commenting this out in order to test the functionality of UserRepository. 	
-// 	/* Constructor enforces dependency injection on user variable
-// 	 * 
-// 	 *  @param user user obj this service is based off of
-// 	 */
- 	
-public UserService(User user) {
-		this.user = user;
-}
- 	
+ 	 	
  		/* DECLARE METHODS */
+ 	public UserService() {
+ 		
+ 	}
+ 	
  	
  	
  	/* Attempts to log in a user by checking the entered email and password
@@ -70,13 +59,22 @@ public UserService(User user) {
  	 * 
  	 *  returns User if the email exists AND the password matches
  	 *  
- 	 *  @param email string of users email in the db
- 	 *  @param password string of users password in the db
+ 	 *  @param 
+ 	 *  
  	 *  
  	 *  Throws NoSuchTuple and InvalidPassword Exceptions
  	 * 		- These will be handled by passing an error code to the front end
  	 */
- 	public static User login(String email, String password) throws NoSuchTupleException, InvalidPasswordException {
+ 	/**
+ 	 * @param email string of users email in the db
+ 	 * @param password string of users password in the db
+ 	 * 
+ 	 * @return user to be logged in
+ 	 * 
+ 	 * @throws NoSuchTupleException	- if email is not found in DB
+ 	 * @throws InvalidPasswordException - if password does not match email for found account 
+ 	 */
+ 	public User login(String email, String password) throws NoSuchTupleException, InvalidPasswordException {
  		
  		User u = userRepo.findUserByEmail(email);
  		
@@ -110,7 +108,7 @@ public UserService(User user) {
  	 *  
  	 *  THROWS ExistingAccountException
  	 */
- 	public static User createNewUser(User info) throws ExistingAccountException, IllegalArgumentException {
+ 	public User createNewUser(User info) throws ExistingAccountException, IllegalArgumentException {
  		
  		 //Pass all relevant users signup info
  		
@@ -143,7 +141,7 @@ public UserService(User user) {
  	 * 
  	 * @return JSON String of new Account added
  	 */
- 	public Account addAccount(String plaidAccountId, String accesstoken) {
+ 	public Account addAccount(String internalUserID, String accesstoken) throws NoSuchTupleException, PlaidException {
 		 //get the account from Plaid
 			// String returnInfo = plaidUtil.findAccount(accesstoken);
 		
@@ -167,8 +165,8 @@ public UserService(User user) {
  	 *  
  	 *  THROWS plaidException if there is an error with plaid
  	 */
- 	public List<String> getAllAccounts() {	
- 		 List<Account> accs = accRepo.findAccountByUserId(user.getId());
+ 	public List<String> getAllAccounts(int internalUserID) throws NoSuchTupleException, PlaidException {	
+ 		 List<Account> accs = accRepo.findAccountByUserId(internalUserID);
  		 List<String> accData = new ArrayList<>();
  		 
  		for(Account a : accs) {
@@ -187,7 +185,7 @@ public UserService(User user) {
  	//END GET ALL ACCOUNTS
 
  	
- 	public String getAccount(int internalID) throws NoSuchTupleException {
+ 	public String getAccount(int internalID) throws NoSuchTupleException, PlaidException {
  		
  		Optional<Account> a = accRepo.findById(internalID);
  		
@@ -202,6 +200,14 @@ public UserService(User user) {
  	
  	
  	
+ 	/**
+ 	 * @param internalID - internal ID of account that we desire transactions for
+ 	 * @return - List, in JSON form, of recent transactions associated with this account
+ 	 */
+ 	public List<String> getTransactionsForAccount(int internalID) throws NoSuchTupleException, PlaidException {
+ 	
+ 		return null;
+ 	}
  	
  	
  	
