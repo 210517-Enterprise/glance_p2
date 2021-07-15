@@ -1,20 +1,27 @@
 package com.revature.controller;
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 //Spring Web Includes
 import org.springframework.web.bind.annotation.RestController;
 
+import com.revature.entities.Account;
 //Glance Project Includes
 import com.revature.entities.User;
 import com.revature.exceptions.ExistingAccountException;
 import com.revature.exceptions.InvalidPasswordException;
+import com.revature.exceptions.NoExistingAccountsException;
 import com.revature.exceptions.NoSuchTupleException;
+import com.revature.exceptions.PlaidException;
 import com.revature.service.UserService;
 
 
@@ -27,6 +34,7 @@ public class MainController {
 	 * 
 	 * Will direct resources to front-end for users
 	 */
+	
 	private final UserService userService;
 	
 	@Autowired
@@ -50,41 +58,6 @@ public class MainController {
 	@PostMapping(value="/register")
 	public ResponseEntity<User> registerUser (@ModelAttribute User user, Model model) {
 		
-		/*
-		 * Created User will never be null, we throw either an
-		 * 	- InvalidPassWordException or
-		 *  - AccountAlreadyExists Exception in case of error
-		 *  
-		 *  Whatever value (exception or otherwise) emerges from User service
-		 *  should be wrapped in EntityWrapper with an error code and message
-		 *  erro code 0 for no error, and a null message and then the data
-		 *  saved under the data field
-		 *  
-		 *   This entity wrapper will convert itself to JSON and be sent to the front
-		 *   end in a standardized form
-		 *   
-		 *   See EntityWrapper Code.
-		 *   
-		 *   I would envision this method looking something like
-		 *   
-		 *   String errorCode = 1;
-		 *   String errorMsg = "";
-		 *   User createdUser = null; 
-			try {
-				createdUser = userService.createNewUser(user);
-			} catch(InvalidPassWordException e) {
-				errorCode = 1;
-				errorMsg = e.getMessage()
-			} catch(AccountAlreadyExistsException e) {
-				errorCode = 2;
-				errorMsg = e.getMessage();
-			}
-			
-			return ResponseEntity.ok(new EntityWrapper(errorCode, errorMsg, createdUser));
-		
-		 * 
-		 */
-		
 		model.addAttribute("user", user);
 		
 		try {
@@ -96,6 +69,58 @@ public class MainController {
 		} catch(IllegalArgumentException e) {
 			e.printStackTrace();
 			return new ResponseEntity<User>(HttpStatus.NOT_ACCEPTABLE);
+		}
+	}
+	
+	//FIXME change the return type to not be String
+	@GetMapping(value="/addAccount")
+	public @ResponseBody ResponseEntity<Account> addAccount() {
+		String accessToken = "access-sandbox-bd815122-d735-41bf-8119-08cdab46099d";
+		int id = 1;
+		System.out.println(accessToken + " " + id);
+		
+		try {
+			List<Account> newAccounts = userService.addAccounts(id, accessToken);
+			return new ResponseEntity<Account>(HttpStatus.OK);
+		} catch (NoSuchTupleException | PlaidException | NoExistingAccountsException e) {
+			return new ResponseEntity<Account>(HttpStatus.NO_CONTENT);
+		}
+	}
+	
+	@GetMapping(value="/getAccount")
+	public ResponseEntity<String> getAccount(){
+		String accessToken = "access-sandbox-bd815122-d735-41bf-8119-08cdab46099d";
+		int id = 1;
+		
+		
+			try {
+				String foundAccount = userService.getAccount(id);
+				System.out.print(foundAccount);
+				return ResponseEntity.ok(foundAccount);
+			} catch (NoSuchTupleException e) {
+				e.printStackTrace();
+				return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+			} catch (PlaidException e) {
+				e.printStackTrace();
+				return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+			}
+		}
+	
+	@GetMapping(value="/getAccounts")
+	public ResponseEntity<List<String>> getAccounts(){
+		String accessToken = "access-sandbox-bd815122-d735-41bf-8119-08cdab46099d";
+		
+		try {
+			List<String> foundAccounts = userService.getAllAccounts(1);
+			return ResponseEntity.ok(foundAccounts);
+		} catch (NoSuchTupleException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} catch (PlaidException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
 }
