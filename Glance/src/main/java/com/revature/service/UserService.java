@@ -197,10 +197,6 @@ import org.springframework.beans.factory.annotation.Autowired;
  		List<Account> accs = user.getAccounts();
  		StringBuilder sb = new StringBuilder();
  		
- 		sb.append("[");
- 		for(Account a : accs) {
- 			sb.append(a.stringAsJSON());
- 		}
  		
  		return sb.toString();
  	}
