@@ -87,13 +87,6 @@ public class MainController {
 		
 		model.addAttribute("user", user);
 		
-		User createdUser = userService.createNewUser(user);
-		
-		if(createdUser == null) {
-			return ResponseEntity.notFound().build();
-		} else {
-		model.addAttribute("user", user);
-		
 		try {
 			User createdUser = userService.createNewUser(user);
 			return ResponseEntity.ok(createdUser);
