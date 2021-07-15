@@ -38,13 +38,13 @@ import org.springframework.transaction.annotation.Transactional;
  		/* DECLARE VARIABLES */
  	
  	@Autowired
- 	private static UserRepository userRepo;
+ 	private UserRepository userRepo;
  	
  	@Autowired
- 	private static AccountRepository accRepo;
+ 	private AccountRepository accRepo;
  	
  	@Autowired
- 	private static GoalRepository goalRepo;
+ 	private GoalRepository goalRepo;
  	
  	 	
  		/* DECLARE METHODS */
@@ -53,18 +53,7 @@ import org.springframework.transaction.annotation.Transactional;
  	}
  	
  	
- 	
- 	/* Attempts to log in a user by checking the entered email and password
- 	 * against our saved quantites in the db, users table
- 	 * 
- 	 *  returns User if the email exists AND the password matches
- 	 *  
- 	 *  @param 
- 	 *  
- 	 *  
- 	 *  Throws NoSuchTuple and InvalidPassword Exceptions
- 	 * 		- These will be handled by passing an error code to the front end
- 	 */
+
  	/**
  	 * @param email string of users email in the db
  	 * @param password string of users password in the db
@@ -98,6 +87,7 @@ import org.springframework.transaction.annotation.Transactional;
  		}
 		  
  	}
+	//END USER LOGIN
  
  	/* Attempts to create a new User Account with the provided information
  	 * 

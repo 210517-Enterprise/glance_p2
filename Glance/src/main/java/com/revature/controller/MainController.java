@@ -2,6 +2,7 @@ package com.revature.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 //Glance Project Includes
 import com.revature.entities.User;
+import com.revature.exceptions.ExistingAccountException;
 import com.revature.exceptions.InvalidPasswordException;
 import com.revature.exceptions.NoSuchTupleException;
 import com.revature.service.UserService;
@@ -90,7 +92,17 @@ public class MainController {
 		if(createdUser == null) {
 			return ResponseEntity.notFound().build();
 		} else {
+		model.addAttribute("user", user);
+		
+		try {
+			User createdUser = userService.createNewUser(user);
 			return ResponseEntity.ok(createdUser);
+		} catch (ExistingAccountException e) {
+			e.printStackTrace();
+			return new ResponseEntity<User>(HttpStatus.NOT_ACCEPTABLE);
+		} catch(IllegalArgumentException e) {
+			e.printStackTrace();
+			return new ResponseEntity<User>(HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
 }
