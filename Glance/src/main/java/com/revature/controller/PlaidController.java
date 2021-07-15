@@ -1,9 +1,11 @@
 package com.revature.controller;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,17 +14,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.Gson;
 import com.plaid.client.ApiClient;
 import com.plaid.client.model.AccountsBalanceGetRequest;
-import com.plaid.client.model.AccountsGetRequest;
 import com.plaid.client.model.AccountsGetResponse;
 import com.plaid.client.model.CountryCode;
+import com.plaid.client.model.Error;
 import com.plaid.client.model.ItemPublicTokenExchangeRequest;
 import com.plaid.client.model.ItemPublicTokenExchangeResponse;
 import com.plaid.client.model.LinkTokenCreateRequest;
 import com.plaid.client.model.LinkTokenCreateRequestUser;
 import com.plaid.client.model.LinkTokenCreateResponse;
 import com.plaid.client.model.Products;
+import com.plaid.client.model.TransactionsGetRequest;
+import com.plaid.client.model.TransactionsGetRequestOptions;
+import com.plaid.client.model.TransactionsGetResponse;
 import com.plaid.client.request.PlaidApi;
 
 import retrofit2.Response;
@@ -111,6 +117,40 @@ public class PlaidController {
 	    public LinkToken(String linkToken) {
 	      this.linkToken = linkToken;
 	    }
+	  }
+	
+	@PostMapping(value="transactions/get")
+	public TransactionsGetResponse getTransactions(String accessToken) throws IOException {
+	    LocalDate startDate = LocalDate.now().minusDays(30);
+	    LocalDate endDate = LocalDate.now();
+
+	    TransactionsGetRequestOptions options = new TransactionsGetRequestOptions()
+	    .count(100);
+
+	    TransactionsGetRequest request = new TransactionsGetRequest()
+	      .accessToken(accessToken)
+	      .startDate(startDate)
+	      .endDate(endDate)
+	      .options(options);
+
+	    Response<TransactionsGetResponse> response = null;
+	    for (int i = 0; i < 5; i++){
+	      response = plaidClient.transactionsGet(request).execute();
+	      if (response.isSuccessful()){
+	        break;
+	      } else {
+	        try {
+	          Gson gson = new Gson();
+	          Error error = gson.fromJson(response.errorBody().string(), Error.class);
+	          error.getErrorType().equals(Error.ErrorTypeEnum.ITEM_ERROR);
+	          error.getErrorCode().equals("PRODUCT_NOT_READY");
+	          Thread.sleep(3000);
+	        } catch (Exception e) {
+	          e.printStackTrace();
+	        }
+	      }
+	    }
+	    return response.body();
 	  }
 	
 }
