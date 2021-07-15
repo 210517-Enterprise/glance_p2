@@ -33,10 +33,10 @@ public class MainController {
 		this.userService = userService;
 	}
 	
-	@PostMapping(value="login")
+	@PostMapping(value="/login")
 	public ResponseEntity<User> loginUser(@ModelAttribute User user, Model model){
 		model.addAttribute("user",user);
-		
+		System.out.println(user);
 		try {
 			User foundUser = userService.login(user.getEmail(), user.getPassword());
 			return ResponseEntity.ok(foundUser);
