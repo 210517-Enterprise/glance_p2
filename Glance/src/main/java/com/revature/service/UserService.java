@@ -1,6 +1,8 @@
  package com.revature.service;
  
- import java.util.List;
+ import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,6 +131,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  		
  		 //May need to add extra paramater for plaid info
  		 User saved = null;
+ 		 info.setPassword(BCrypt.hashpw(info.getPassword(), BCrypt.gensalt()));
  		try {
  	 		 //save User to db using DAO
  			saved = userRepo.save(info);
@@ -147,25 +150,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  	}
  	 //END CREATE NEW USER METHOD 
  	
- 	
- 	
- 	/*  Attempts to load all account data for user from Plaid and store in RAM
- 	 * 
- 	 *  returns void
- 	 *  
- 	 *  THROWS plaidException if there is an error with plaid
- 	 */
- 	public void loadAccounts() {
- 		
- 		 List<Account> accs = user.getAccounts();
- 		
- 		for(Account a : accs) {
- 		  		//plaidUtil.loadAccountData(a);
- 		  }
- 		 	
- 	}
- 	 //END LOAD ACCOUNTS
- 	
+
  	
  	/**
  	 * @param plaidAccountId - some personal identifier specific to the user
@@ -191,21 +176,43 @@ import org.springframework.beans.factory.annotation.Autowired;
  	}
  	// END ADD ACCOUNT
  	
- 	
- 	public String getAllAccountsAsJSON() 
- 	{
- 		List<Account> accs = user.getAccounts();
- 		StringBuilder sb = new StringBuilder();
+ 	/*  Attempts to load all account data for user from Plaid and store in RAM
+ 	 * 
+ 	 *  returns void
+ 	 *  
+ 	 *  THROWS plaidException if there is an error with plaid
+ 	 */
+ 	public List<String> getAllAccounts() {	
+ 		 List<Account> accs = accRepo.findAccountByUserId(user.getId());
+ 		 List<String> accData = new ArrayList<>();
+ 		 
+ 		for(Account a : accs) {
+ 		  		try {
+					String accInfo = getAccount(a.getId());
+					accData.add(accInfo);
+				} catch (NoSuchTupleException e) {
+					
+				}
+ 		  }
+ 		//END FOR
  		
- 		
- 		return sb.toString();
+		return accData;
+ 	 		 
  	}
  	//END GET ALL ACCOUNTS
 
  	
- 	public String getAccountAsJSON(int internalID) {
- 		//return accRepo.findById(internalID).stringAsJSON();
- 		return null;
+ 	public String getAccount(int internalID) throws NoSuchTupleException {
+ 		
+ 		Optional<Account> a = accRepo.findById(internalID);
+ 		
+ 		if(a.isPresent()) {
+ 			//String returnInfo = plaidUtil.findAccount(a.get().getPlaidKey());
+ 			return null;
+ 		} else {
+ 			throw new NoSuchTupleException("Error finding account with ID: " + internalID);
+ 		}
+ 		
  	}// END GETACCOUNTASJSON
  	
  	
