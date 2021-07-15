@@ -88,7 +88,7 @@ public User login(String email, String password) throws NoSuchTupleException, In
     }
      
 }
->>>>>>> 48d3d6d0dfd293eca89c690cf2eb50b9d0f65862
+
  
  	/* Attempts to create a new User Account with the provided information
  	 * 
