@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 //Spring Web Includes
 import org.springframework.web.bind.annotation.RestController;
@@ -87,7 +88,7 @@ public class MainController {
 	 */
 	@GetMapping(value="/addAccount")
 
-	public @ResponseBody ResponseEntity<Account> addAccount(@RequestBody String accessToken) {
+	public @ResponseBody ResponseEntity<Account> addAccount(@RequestParam String accessToken) {
 		//String accessToken = "access-sandbox-bd815122-d735-41bf-8119-08cdab46099d";
 		int id = 1;
 		System.out.println(accessToken + " " + id);
@@ -131,7 +132,7 @@ public class MainController {
 	 * Retrieves all accounts that a user owns.
 	 * @param accessToken FIXME again this might be something that is provided by a userId
 	 * @return
-	 */
+git a	 */
 	@GetMapping(value="/getAccounts")
 	public ResponseEntity<List<String>> getAccounts(){
 		String accessToken = "access-sandbox-bd815122-d735-41bf-8119-08cdab46099d";
