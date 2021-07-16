@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 //Spring Web Includes
 import org.springframework.web.bind.annotation.RestController;
@@ -106,14 +107,11 @@ public class MainController {
 	 * @return A status code of either 200 or no conent if it fails.
 	 */
 	@GetMapping(value="/addAccount")
-	public @ResponseBody ResponseEntity<Account> addAccount() {
-		String accessToken = "access-sandbox-bd815122-d735-41bf-8119-08cdab46099d";
-		int id = 1;
-		System.out.println(accessToken + " " + id);
-		
+	public @ResponseBody ResponseEntity<Account> addAccount(@RequestParam int userId, @RequestParam String plaidAccessToken) {
+		System.out.println("User ID: " + " " + userId + "AccessToken: " + plaidAccessToken);
 
 		try {
-			List<Account> newAccounts = userService.addAccounts(id, accessToken);
+			List<Account> newAccounts = userService.addAccounts(userId, plaidAccessToken);
 			return new ResponseEntity<Account>(HttpStatus.OK);
 		} catch (NoSuchTupleException | PlaidException | NoExistingAccountsException e) {
 			return new ResponseEntity<Account>(HttpStatus.NO_CONTENT);

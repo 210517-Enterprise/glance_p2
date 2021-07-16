@@ -24,11 +24,15 @@ let generateToken = (async function() {
     let accessToken = await response.json();
     console.log("Access token " + accessToken);
 
-    let url = "/addAccount?accessToken=" + accessToken;
+    let params = document.cookie.split("; ");
+
+    let url = `/addAccount?${params[0]}&${params[1]}`;
     console.log(url);
 
     let response2 = await fetch(url)
     console.log(response2);
+
+    redirect();
   },
   onLoad: () => {},
   onExit: (err, metadata) => {
@@ -45,7 +49,10 @@ let generateToken = (async function() {
   },
   receivedRedirectUri: null,
 });
-
-handler.open();
+handler.open()
 
 })
+
+const redirect = () => {
+  window.location.href = "overview.html"
+}
