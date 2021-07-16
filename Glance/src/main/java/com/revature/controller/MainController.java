@@ -9,10 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 //Spring Web Includes
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.revature.entities.Account;
 //Glance Project Includes
@@ -65,18 +65,21 @@ public class MainController {
 	 * @return a ResponseEntity containing a status code 200 or a status code resulting in an error. If the status code is 200 it will also return the user registered.
 	 */
 	@PostMapping(value="/register")
-	public ResponseEntity<User> registerUser (User user) {
+	public RedirectView registerUser (User user) {
 		
 		
 		try {
 			User createdUser = userService.createNewUser(user);
-			return ResponseEntity.ok(createdUser);
+			return new RedirectView("/link.html");
+			//return ResponseEntity.ok(createdUser);
 		} catch (ExistingAccountException e) {
 			e.printStackTrace();
-			return new ResponseEntity<User>(HttpStatus.NOT_ACCEPTABLE);
+			return new RedirectView("/signup.html");
+			//return new ResponseEntity<User>(HttpStatus.NOT_ACCEPTABLE);
 		} catch(IllegalArgumentException e) {
 			e.printStackTrace();
-			return new ResponseEntity<User>(HttpStatus.NOT_ACCEPTABLE);
+			return new RedirectView("/signup.html");
+			//return new ResponseEntity<User>(HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
 	//END Register User
