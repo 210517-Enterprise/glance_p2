@@ -38,68 +38,20 @@
         <div class="col-8">
           <div class="row">
             <div class="accounts">
-              <table>
-                <caption>Accounts Summary</caption>
-                <thead>
+              <table id="summaryTable">
+                <caption id="summaryTableCaption">Accounts Summary</caption>
+                <thead id="summaryTableHead">
                   <tr>
                   <th>Account Name:</th>
                   <th>Current Balance:</th>
                   <th>Available Balance:</th>
                   </tr>
                 </thead>
-                <tr>
-                  <td>Plaid Checking</td>
-                  <td>110.00</td>
-                  <td>100</td>
-                </tr>
-                <tr>
-                  <td>Plaid Savings</td>
-                  <td>100.00</td>
-                  <td>100.00</td>
-                </tr>
               </table>
             </div>
           </div>
           <div class="row">
             <canvas id="myChart" width="400px" height="400px"></canvas>
-            <script>
-
-            const labels = [
-              'January',
-              'February',
-              'March',
-              'April',
-              'May',
-              'June',
-            ];
-
-            const data = {
-              labels: [
-                'Checking',
-                'Savings'
-              ],
-              datasets: [{
-                label: 'Accout Balances',
-                data: [110, 100],
-                backgroundColor: [
-                  'rgb(255, 99, 132)',
-                  'rgb(54, 162, 235)'
-                ],
-                hoverOffset: 8
-              }]
-            };
-
-            const config = {
-              type: 'pie',
-              data,
-              options: {}
-            };
-
-              var myChart = new Chart(
-              document.getElementById('myChart'),
-              config
-              );
-          </script>
           </div>
         </div>
       </div>
