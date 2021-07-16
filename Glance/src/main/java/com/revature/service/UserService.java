@@ -280,16 +280,17 @@ import com.revature.controller.PlaidController;
 			List<String> transactionsList = new ArrayList<>();
 			
 			for(Transaction t : temp) {
-				if (accRepo.findPlaidKeyById(internalID) == t.getAccountId()) {
+				String tempPlaid = accRepo.findPlaidKeyById(internalID);
+				if (accRepo.findPlaidKeyById(internalID).equals(t.getAccountId())) {
 					transactionsList.add(t.toString());
 				}
 			}
 			
-			
+			return transactionsList;
 		} catch (IOException e) {
 			throw new PlaidException("Problem reading account data from Plaid with this accessToken");
 		}
- 		return null;
+ 		
  	}
  	
  	
