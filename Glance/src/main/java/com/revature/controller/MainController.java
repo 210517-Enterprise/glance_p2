@@ -79,6 +79,9 @@ public class MainController {
 			return new ResponseEntity<User>(HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
+	//END Register User
+	
+
 	
 	/**
 	 * Adds all plaid accounts to the user account.
@@ -171,3 +174,4 @@ git a	 */
 		}
 	}
 }
+//END CLASS Main Controller

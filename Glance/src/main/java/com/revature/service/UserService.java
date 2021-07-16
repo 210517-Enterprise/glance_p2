@@ -141,7 +141,7 @@ import com.revature.controller.PlaidController;
  	 * @param PlaidAccountId - some personal identifier specific to the user
  	 * @param accesstoken	- 	the bank specific accesstoken the user has acquired from Plaid
  	 * 
- 	 * @return List<Account> of new Account added
+ 	 * @return List<Account> of new Accounts added (this contains only data stored in our DB, no balances, transactions etc.)
  	 * @throws NoExistingAccountsException, NoSuchTupleException, PlaidException,
  	 */
  	public List<Account> addAccounts(int internalUserID, String accesstoken) throws NoSuchTupleException, PlaidException, NoExistingAccountsException {
