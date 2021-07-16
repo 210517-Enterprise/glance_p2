@@ -37,6 +37,11 @@
           margin: 0;
         }
 
+        #sec-acc-details {
+          height: 100%;
+          margin-top: 20%;
+        }
+
 
         /**** CLASS STYLING ****/
 
@@ -76,16 +81,6 @@
         .acc-detail {
           text-align: left;
           font-weight: 400;
-        } 
-
-        /**** GENERAL STYLING ****/
-        .container {
-          height: 2000px !important;
-        }
-
-        footer {
-          bottom: 0;
-          
         }
 
       </style>
@@ -148,17 +143,23 @@
 
                   <!-- COL 2 Account Info -->
                   <div class="col-3">
-                    
-                    <h4 id="acc-detail-header">Account Details</h4>
+
+                    <div id="sec-acc-details">
+
+                      <h4 id="acc-detail-header">Account Details</h4>
                       <div class="acc-data">
                         <ul class="nav flex-column nav-pills">
                           <li class="acc-detail">Detail 1</a></li>
                           <li class="acc-detail">Detail 2 </a></li>
                         </ul>
-
                       </div>
                     
+
+                    </div>
+                    <!-- END Sec acc details-->
+                    
                   </div>
+                  <!-- END COL 2-->
 
 
                   <!-- COL 3 - Graphic on top of  Transaction info -->

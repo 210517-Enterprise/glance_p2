@@ -75,4 +75,73 @@ function pullValue(plaidTx, quantity) {
 
 
 
-//Other dynamic webpage based functions here
+/* DYNAMIC WEB BASED JS DOWN HERE */
+
+//Await data from backend
+function getDataOnLoad() {
+
+    //Get Account Overview page link
+
+    //Get Individual account links
+
+    //Get account details for THIS account
+
+    //Get account transactions for THIS account
+
+}
+
+
+
+
+//Add accounts dynamically to navbar
+function addAccountLinks() {
+
+    //"Accounts" section header links back to overview
+
+    //Each "Account k" links to that account page
+
+    //need to dom.innerHTML
+}
+
+
+
+//Adds account details dynamically to Navbar
+
+
+
+//Adds transactions to transactions list and builds chart
+function buildChart(data) {
+    /*
+        Pie chart maps expenditures to individual categories
+    */
+
+
+}
+
+
+function buildTable(data) {
+    /*
+        Builds table of transactions dynamically up to 
+        a certain specified number
+    */
+   const maxTrans = 10;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
