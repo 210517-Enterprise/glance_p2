@@ -77,6 +77,12 @@ function pullValue(plaidTx, quantity) {
 
 /* DYNAMIC WEB BASED JS DOWN HERE */
 
+window.onload = function() {
+    getDataOnLoad();
+
+    addAccountLinks();
+}
+
 //Await data from backend
 function getDataOnLoad() {
 
@@ -94,7 +100,9 @@ function getDataOnLoad() {
 
 
 //Add accounts dynamically to navbar
-function addAccountLinks() {
+    // accountsOverviewURL - string URL back to accounts overview for this user
+    // 
+function addAccountLinks(accountsOverviewURL, accountLinks) {
 
     //"Accounts" section header links back to overview
 
