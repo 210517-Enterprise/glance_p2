@@ -58,6 +58,29 @@ fieldset {
   margin: 2%;
 }
 
+ul.nav {
+  margin: 15px auto;
+  text-align: center;
+  width: 50%;
+}
+
+li.nav-item {
+  background-color: var(--accent-color);
+  margin: 5px;
+}
+
+a.nav-link:link {
+  color: white;
+}
+
+a.nav-link:visited {
+  color: white;
+}
+
+a.nav-link:hover {
+  color: grey;
+}
+
 .center {
   text-align: center;
 }

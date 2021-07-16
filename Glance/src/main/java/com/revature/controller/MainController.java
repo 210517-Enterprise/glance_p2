@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 //Spring Web Includes
 import org.springframework.web.bind.annotation.RestController;
@@ -74,8 +75,8 @@ public class MainController {
 	
 	//FIXME change the return type to not be String
 	@GetMapping(value="/addAccount")
-	public @ResponseBody ResponseEntity<Account> addAccount() {
-		String accessToken = "access-sandbox-bd815122-d735-41bf-8119-08cdab46099d";
+	public @ResponseBody ResponseEntity<Account> addAccount(@RequestBody String accessToken) {
+		//String accessToken = "access-sandbox-bd815122-d735-41bf-8119-08cdab46099d";
 		int id = 1;
 		System.out.println(accessToken + " " + id);
 		
