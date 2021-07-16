@@ -61,7 +61,7 @@ public class MainController {
 		try {
 			User u = userService.login(user.getEmail(), user.getPassword());
 			model.addAttribute("user",u);
-			userIdManager(request, response, u);
+			userCookieManager(request, response, u);
 			return  new ModelAndView("redirect:/overview.html");
 		} catch (InvalidPasswordException | NoSuchTupleException e) {
 			return new ModelAndView("redirect:/index.html");
@@ -83,7 +83,7 @@ public class MainController {
 		
 		try {
 			User createdUser = userService.createNewUser(user);
-			userIdManager(request, response, createdUser);
+			userCookieManager(request, response, createdUser);
 			return new RedirectView("/link.html");
 			//return ResponseEntity.ok(createdUser);
 		} catch (ExistingAccountException e) {
@@ -96,10 +96,8 @@ public class MainController {
 			//return new ResponseEntity<User>(HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
-	//END Register User
 	
 
-	
 	/**
 	 * Adds all plaid accounts to the user account.
 	 * @param id FIXME there needs to be an integer id to add the accounts to the user with the id of id.
@@ -187,20 +185,67 @@ git a	 */
 		}
 	}
 	
-	private void userIdManager(HttpServletRequest request, HttpServletResponse response, User u) {
-		final String cookieName = "userId";
-		final String cookieValue = String.valueOf(u.getId());
+	/**
+	 * Logs out the current user from the session.
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@GetMapping(value="/logout")
+	public RedirectView logout(HttpServletRequest request, HttpServletResponse response) {
+		//Clearing the cookies
+		clearCookies(request, response);
+		
+		//Returning to index.html
+		return new RedirectView("/index.html");
+	}
+	
+	/**
+	 * Adds the cookies to the current session.
+	 * @param request The Http request
+	 * @param response The Http response
+	 * @param u The user that was either registered or logged in.
+	 */
+	private void userCookieManager(HttpServletRequest request, HttpServletResponse response, User u) {
+		final String userIdCookieName = "userId";
+		final String userIdCookieValue = String.valueOf(u.getId());
+		
+		final String userIsLoggedIn = "userIsLoggedIn";
+		final String userIsLoggedInCookieValue = "True";
+		
 		final boolean useSecureCookie = false;
 		final int expiryTime = 60* 60 * 24;
 		final String cookiePath = "/";
 		
-		Cookie userIdCookie = new Cookie(cookieName, cookieValue);
+		
+		Cookie userIsLoggedInCookie = new Cookie(userIsLoggedIn, userIsLoggedInCookieValue);
+		Cookie userIdCookie = new Cookie(userIdCookieName, userIdCookieValue);
 		
 		userIdCookie.setSecure(useSecureCookie);
 		userIdCookie.setMaxAge(expiryTime);
 		userIdCookie.setPath(cookiePath);
 		
+		userIsLoggedInCookie.setSecure(useSecureCookie);
+		userIsLoggedInCookie.setMaxAge(expiryTime);
+		userIsLoggedInCookie.setPath(cookiePath);
+		
 		response.addCookie(userIdCookie);
+		response.addCookie(userIsLoggedInCookie);
+	}
+	
+	/**
+	 * Clears all the current cookies within the session.
+	 * @param request The Http request
+	 * @param response The Http response
+	 */
+	private void clearCookies(HttpServletRequest request, HttpServletResponse response) {
+		Cookie[] cookies = request.getCookies();
+		for(Cookie cookie : cookies) {
+			cookie.setMaxAge(0);
+			cookie.setPath("");
+			cookie.setValue(null);
+			response.addCookie(cookie);
+		}
 	}
 }
 //END CLASS Main Controller
