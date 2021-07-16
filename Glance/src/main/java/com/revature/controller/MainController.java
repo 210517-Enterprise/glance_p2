@@ -3,6 +3,10 @@ package com.revature.controller;
 
 import java.util.List;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 //Spring Web Includes
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.revature.entities.Account;
@@ -36,7 +41,6 @@ public class MainController {
 	 * 
 	 * Will direct resources to front-end for users
 	 */
-	
 	private final UserService userService;
 	
 	@Autowired
@@ -44,25 +48,27 @@ public class MainController {
 		this.userService = userService;
 	}
 	
-
-	@PostMapping(value="/login")
-	public ResponseEntity<User> loginUser(@ModelAttribute User user, Model model){
-		model.addAttribute("user",user);
-
 	/**
 	 * The login in method for the Glance application
 	 * @param user the user attempting to log in. In this case the only two values that the user has is <code>email</code> and <code>password</code>
 	 * @return a ResponseEntity either containing an HttpStatus code of OK or an HttpStatus code of NotFound. Additionally passes back the user if the email and password exist in the DB.
 	 */
-
-		System.out.println(user);
+	@PostMapping(value="/login")
+	public ModelAndView loginUser(HttpServletRequest request, HttpServletResponse response, @ModelAttribute User user, Model model){
+		
+		
 		try {
-			User foundUser = userService.login(user.getEmail(), user.getPassword());
-			return ResponseEntity.ok(foundUser);
+			User u = userService.login(user.getEmail(), user.getPassword());
+			model.addAttribute("user",u);
+			userIdManager(request, response, u);
+			return  new ModelAndView("redirect:/overview.html");
 		} catch (InvalidPasswordException | NoSuchTupleException e) {
-			return ResponseEntity.notFound().build();
+			return new ModelAndView("redirect:/index.html");
 		}
 	}
+	
+	
+
 	
 	
 	/**
@@ -71,11 +77,12 @@ public class MainController {
 	 * @return a ResponseEntity containing a status code 200 or a status code resulting in an error. If the status code is 200 it will also return the user registered.
 	 */
 	@PostMapping(value="/register")
-	public RedirectView registerUser (User user) {
+	public RedirectView registerUser (HttpServletRequest request, HttpServletResponse response, User user) {
 		
 		
 		try {
 			User createdUser = userService.createNewUser(user);
+			userIdManager(request, response, createdUser);
 			return new RedirectView("/link.html");
 			//return ResponseEntity.ok(createdUser);
 		} catch (ExistingAccountException e) {
@@ -180,6 +187,22 @@ git a	 */
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
+	}
+	
+	private void userIdManager(HttpServletRequest request, HttpServletResponse response, User u) {
+		final String cookieName = "userId";
+		final String cookieValue = String.valueOf(u.getId());
+		final boolean useSecureCookie = false;
+		final int expiryTime = 60* 60 * 24;
+		final String cookiePath = "/";
+		
+		Cookie userIdCookie = new Cookie(cookieName, cookieValue);
+		
+		userIdCookie.setSecure(useSecureCookie);
+		userIdCookie.setMaxAge(expiryTime);
+		userIdCookie.setPath(cookiePath);
+		
+		response.addCookie(userIdCookie);
 	}
 }
 //END CLASS Main Controller
