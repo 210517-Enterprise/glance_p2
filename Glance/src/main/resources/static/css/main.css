@@ -49,6 +49,38 @@ fieldset {
   border: 1px solid black;
 }
 
+table {
+  width: 75%;
+  margin: 2% auto;
+  border: 1px solid black;
+}
+
+thead {
+  text-align: center;
+  background-color: var(--accent-color);
+  color: white;
+}
+
+th{
+  font-weight: bold;
+}
+
+th, td{
+  padding: 10px;
+  border: 1px solid black;
+}
+
+caption {
+  font-weight: bold;
+  text-align: center;
+}
+
+canvas {
+  width: 75% !important;
+  height: auto !important;
+  margin: 2% auto;
+}
+
 #buttons input {
     width: 100px;
     margin-left: 15px;
@@ -56,6 +88,29 @@ fieldset {
 
 #main-page-content {
   margin: 2%;
+}
+
+ul.nav {
+  margin: 15px auto;
+  text-align: center;
+  width: 50%;
+}
+
+li.nav-item {
+  background-color: var(--accent-color);
+  margin: 5px;
+}
+
+a.nav-link:link {
+  color: white;
+}
+
+a.nav-link:visited {
+  color: white;
+}
+
+a.nav-link:hover {
+  color: grey;
 }
 
 .center {

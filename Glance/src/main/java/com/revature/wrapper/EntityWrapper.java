@@ -56,6 +56,7 @@ public class EntityWrapper {
 	/** Takes no parameters
 	 * @return ITSELF, all data contained in this entity as JSON
 	 */
+	
 	public String asJSON() {
 		
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -64,11 +65,13 @@ public class EntityWrapper {
 	    		+ "\"errorMsg\" : \"Critical Erorr, conversion to JSON failed\",}" +
 	    		"data: : {} }";
 		try {
+			
 			json = objectMapper.writeValueAsString(this);
+			
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
-	    System.out.println("Convert List to JSON :");
+	    System.out.println("Object as JSON :");
 	    System.out.println(json);
 	    
 		return json;
