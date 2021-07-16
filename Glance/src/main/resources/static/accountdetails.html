@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <link rel="stylesheet" href="css/main.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Glance - Account Details</title>
+
+    <script src="scripts/transactions.js"></script>
+
+
+      <style>
+
+
+        /**** SPECIFIC ENTITY STYLING ****/
+
+        /* Simple acc detail header */
+        #acc-detail-header {
+          text-align: center;
+        }
+
+        #acc-link-title {
+          text-align: center;
+          color: #fff;
+          font-size: larger;
+          line-height: inherit;
+
+          background-color: #1760a0;
+          border-bottom: 1px solid black;
+
+          width: 100%;
+          height: auto;
+          position: relative;
+          margin: 0;
+        }
+
+
+        /**** CLASS STYLING ****/
+
+        /* style instances that link to other accounts in our side "Navbar" */
+        .acc-link {
+         /* for text inside the account links" */
+          color: black;
+          font-weight: 700;
+          text-decoration: none;
+          font-size:large ;
+        }
+
+        .acc-link-list {
+          list-style-type: disc;
+          margin-bottom: 1em;
+        }
+
+        /* we have a div explicitly for our navBar title and then this div which wraps 
+            them both together and spans 2/3rds of its 3 row bootstrap collumn alotment*/
+        .acc-link-wrapper {
+          width: 66%;
+          background-color: rgb(219, 216, 216);
+          border: 2px solid #1760a0;
+        }
+
+
+        /* Styling div that holds acc Data */
+        .acc-data {
+          background-color: rgb(219, 216, 216);
+          border: 5px solid #1760a0;
+          border-radius: 20px;
+          height: 50%;
+        }
+
+
+        /* Each acc detail style */
+        .acc-detail {
+          text-align: left;
+          font-weight: 400;
+        } 
+
+        /**** GENERAL STYLING ****/
+        .container {
+          height: 2000px !important;
+        }
+
+        footer {
+          bottom: 0;
+          
+        }
+
+      </style>
+
+    </head>
+
+    <!-- Generally 3 Column look here: Sidebar Nav, Account Details, Transaction list + visual -->
+    <body>
+        
+        
+        <!-- Wrapper div named Container -->
+        <div class="container">
+
+            <header>
+              <div class="logoImg d-inline">
+                  <img src="images/logo2.png" alt="Glance" />
+              </div>
+      
+              <!-- Navbar built into the top in our header of our Accounts detail page-->
+              <nav class="navbar navbar-expand-md">
+                <ul class="navbar-nav mr-auto">
+                  <li class="nav-item">
+                    <a class="nav-link" href="#" id="logout">Log Out</a>
+                  </li>
+                </ul>
+              </nav>
+            </header>
+      
+
+            <!-- Main content divided into 3 columns -->
+            <main>
+                <div class="row">
+                  <!-- DIV ROW -will hold 3 div columns -->
+                  
+                  <!-- COL 1 (Navbar) -->
+                  <div class="col-3">
+
+                    <div class="acc-link-wrapper">
+
+                      <div id="acc-link-title">
+                        Accounts
+                      </div>
+
+                      <ul class="nav flex-column nav-pills">
+                        <li class="acc-link-list"><a href="link.html" class="acc-link">Account 1</a></li>
+                        <li class="acc-link-list"><a href="link.html" class="acc-link">Account 2</a></li>
+                        <!-- Other account links generated via JS -->
+                      </ul>
+
+                    </div>
+                    
+                  </div>
+                  <!-- END COL 1-->
+
+                  <!-- Spacing column 
+                    <div class="col-1"></div>
+                  -->
+                  
+
+
+                  <!-- COL 2 Account Info -->
+                  <div class="col-3">
+                    
+                    <h4 id="acc-detail-header">Account Details</h4>
+                      <div class="acc-data">
+                        <ul class="nav flex-column nav-pills">
+                          <li class="acc-detail">Detail 1</a></li>
+                          <li class="acc-detail">Detail 2 </a></li>
+                        </ul>
+
+                      </div>
+                    
+                  </div>
+
+
+                  <!-- COL 3 - Graphic on top of  Transaction info -->
+                  <div class="col-6">
+
+                    <!-- Char has data loaded from JS for transactions-->
+                    <div class="row">
+                      <canvas id="myChart" width="400px" height="400px"></canvas>
+                    </div>
+
+                    <!-- Display Transactions in Tabulated format -->
+                    <table id="summaryTable">
+                      <caption id="summaryTableCaption">Recent Transactions</caption>
+                      <thead id="summaryTableHead">
+                        <tr>
+                        <th>Account Name:</th>
+                        <th>Current Balance:</th>
+                        <th>Available Balance:</th>
+                        </tr>
+                      </thead>
+                    </table>
+
+                  </div>
+
+
+
+
+                <!-- END DIV ROW -->
+            </main>
+      
+
+
+
+
+
+            <footer>
+              &copy; 2021
+            </footer>
+      
+          </div>
+
+          <!-- Wrapper div named Container -->
+
+    </body>
+
+</html>
