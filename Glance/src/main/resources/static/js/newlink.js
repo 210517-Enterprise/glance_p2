@@ -24,7 +24,7 @@ let generateToken = (async function() {
     let accessToken = await response.json();
     console.log("Access token " + accessToken);
 
-    let url = "/addAccount?acessToken=" + accessToken;
+    let url = "/addAccount?accessToken=" + accessToken;
     console.log(url);
 
     let response2 = await fetch(url)

@@ -90,9 +90,8 @@ public class MainController {
 	 * @return A status code of either 200 or no conent if it fails.
 	 */
 	@GetMapping(value="/addAccount")
-
-	public @ResponseBody ResponseEntity<Account> addAccount(@RequestParam String accessToken) {
-		//String accessToken = "access-sandbox-bd815122-d735-41bf-8119-08cdab46099d";
+	public @ResponseBody ResponseEntity<Account> addAccount() {
+		String accessToken = "access-sandbox-bd815122-d735-41bf-8119-08cdab46099d";
 		int id = 1;
 		System.out.println(accessToken + " " + id);
 		

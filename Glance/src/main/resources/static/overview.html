@@ -3,8 +3,9 @@
   <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="css/main.css">
-    <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
     <script src="js/newlink.js" charset="utf-8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 
     <title>Glance - Accounts Overview</title>
   </head>
@@ -37,10 +38,68 @@
         <div class="col-8">
           <div class="row">
             <div class="accounts">
+              <table>
+                <caption>Accounts Summary</caption>
+                <thead>
+                  <tr>
+                  <th>Account Name:</th>
+                  <th>Current Balance:</th>
+                  <th>Available Balance:</th>
+                  </tr>
+                </thead>
+                <tr>
+                  <td>Plaid Checking</td>
+                  <td>110.00</td>
+                  <td>100</td>
+                </tr>
+                <tr>
+                  <td>Plaid Savings</td>
+                  <td>100.00</td>
+                  <td>100.00</td>
+                </tr>
+              </table>
             </div>
           </div>
           <div class="row">
-            
+            <canvas id="myChart" width="400px" height="400px"></canvas>
+            <script>
+
+            const labels = [
+              'January',
+              'February',
+              'March',
+              'April',
+              'May',
+              'June',
+            ];
+
+            const data = {
+              labels: [
+                'Checking',
+                'Savings'
+              ],
+              datasets: [{
+                label: 'Accout Balances',
+                data: [110, 100],
+                backgroundColor: [
+                  'rgb(255, 99, 132)',
+                  'rgb(54, 162, 235)'
+                ],
+                hoverOffset: 8
+              }]
+            };
+
+            const config = {
+              type: 'pie',
+              data,
+              options: {}
+            };
+
+              var myChart = new Chart(
+              document.getElementById('myChart'),
+              config
+              );
+          </script>
           </div>
         </div>
       </div>
@@ -53,5 +112,6 @@
     </div>
 
     <script src="js/bootstrap.bundle.min.js" charset="utf-8"></script>
+    <script src="js/overview.js" charset="utf-8"></script>
   </body>
 </html>

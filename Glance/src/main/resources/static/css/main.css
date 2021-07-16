@@ -49,6 +49,38 @@ fieldset {
   border: 1px solid black;
 }
 
+table {
+  width: 75%;
+  margin: 2% auto;
+  border: 1px solid black;
+}
+
+thead {
+  text-align: center;
+  background-color: var(--accent-color);
+  color: white;
+}
+
+th{
+  font-weight: bold;
+}
+
+th, td{
+  padding: 10px;
+  border: 1px solid black;
+}
+
+caption {
+  font-weight: bold;
+  text-align: center;
+}
+
+canvas {
+  width: 75% !important;
+  height: auto !important;
+  margin: 2% auto;
+}
+
 #buttons input {
     width: 100px;
     margin-left: 15px;
