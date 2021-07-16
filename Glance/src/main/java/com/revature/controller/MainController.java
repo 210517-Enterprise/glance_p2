@@ -98,4 +98,13 @@ public class MainController {
 			return new ResponseEntity<User>(HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
+	//END Register User
+	
+	
+	
+	
+	
+	
+	
 }
+//END CLASS Main Controller
