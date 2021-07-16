@@ -26,7 +26,7 @@ let generateToken = (async function() {
 
     let params = document.cookie.split("; ");
 
-    let url = `/addAccount?${params[0]}&${params[1]}`;
+    let url = `/addAccount?${params[0]}&${params[2]}`;
     console.log(url);
 
     let response2 = await fetch(url)

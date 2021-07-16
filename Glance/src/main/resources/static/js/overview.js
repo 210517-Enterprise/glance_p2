@@ -7,7 +7,10 @@ window.onload = function() {
 }
 
 let getAccounts = async function() {
-  let response = await fetch("/getAccounts");
+  let params = document.cookie.split("; ");
+  let url = `/getAccounts?${params[0]}`;
+  console.log("url = " + url);
+  let response = await fetch(url);
   accounts = await response.json();
   console.log(accounts);
   console.log(accounts[0]);
@@ -56,7 +59,7 @@ let getAccounts = async function() {
                      '#6890F0',
                      '#A890F0',
                      '#78C850',
-                     '#A040A0'                
+                     '#A040A0'
                    ],
                    hoverOffset: 8
                  }]

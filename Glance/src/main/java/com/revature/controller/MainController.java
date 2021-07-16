@@ -145,14 +145,12 @@ public class MainController {
 	/**
 	 * Retrieves all accounts that a user owns.
 	 * @param accessToken FIXME again this might be something that is provided by a userId
-	 * @return
-git a	 */
+	 * @return git a	 
+	 * */
 	@GetMapping(value="/getAccounts")
-	public ResponseEntity<List<String>> getAccounts(){
-		String accessToken = "access-sandbox-bd815122-d735-41bf-8119-08cdab46099d";
-		
+	public ResponseEntity<List<String>> getAccounts(@RequestParam int userId){
 		try {
-			List<String> foundAccounts = userService.getAllAccounts(1);
+			List<String> foundAccounts = userService.getAllAccounts(userId);
 			return ResponseEntity.ok(foundAccounts);
 		} catch (NoSuchTupleException e) {
 			// TODO Auto-generated catch block
