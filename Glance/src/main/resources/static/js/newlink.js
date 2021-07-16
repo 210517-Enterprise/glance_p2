@@ -24,7 +24,10 @@ let generateToken = (async function() {
     let accessToken = await response.json();
     console.log("Access token " + accessToken);
 
-
+    let response = await fetch("/addAccount", {
+      body: accessToken,
+    })
+    console.log(response);
   },
   onLoad: () => {},
   onExit: (err, metadata) => {

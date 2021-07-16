@@ -157,12 +157,15 @@ import com.revature.controller.PlaidController;
  		//specific to BANKS, not independent accounts
 		List<AccountBase> accs = returnInfo.getAccounts();
 		List<Account> loadedAccounts = new ArrayList<>();
+		
+		//Attempt to find the user with the given id.
+		User u = userRepo.findUserById(internalUserID);
+			
 
 		 //build account type from returninfo
 			 for (AccountBase accountBase : accs) {
 				
 				 try {
-					User u = userRepo.findUserById(internalUserID);
 					if(u == null) {
 						throw new NoSuchTupleException("Failed to find user with this internal ID");
 					}
@@ -277,16 +280,17 @@ import com.revature.controller.PlaidController;
 			List<String> transactionsList = new ArrayList<>();
 			
 			for(Transaction t : temp) {
-				if (accRepo.findPlaidKeyById(internalID) == t.getAccountId()) {
+				String tempPlaid = accRepo.findPlaidKeyById(internalID);
+				if (accRepo.findPlaidKeyById(internalID).equals(t.getAccountId())) {
 					transactionsList.add(t.toString());
 				}
 			}
 			
-			
+			return transactionsList;
 		} catch (IOException e) {
 			throw new PlaidException("Problem reading account data from Plaid with this accessToken");
 		}
- 		return null;
+ 		
  	}
  	
  	
