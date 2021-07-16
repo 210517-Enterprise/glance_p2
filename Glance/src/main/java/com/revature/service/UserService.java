@@ -159,16 +159,23 @@ import com.revature.controller.PlaidController;
 		List<Account> loadedAccounts = new ArrayList<>();
 		
 		//Attempt to find the user with the given id.
-		User u = userRepo.findUserById(internalUserID);
+		
+		User u = null;
+		try {
+			u = userRepo.findUserById(internalUserID);
+			if(u == null) {
+				throw new NoSuchTupleException("Failed to find user with this internal ID");
+			}
+		} catch (NoSuchTupleException e) {
+			//rethrow exception as unknown user will have no accounts
+			throw e;
+		}
 			
 
 		 //build account type from returninfo
 			 for (AccountBase accountBase : accs) {
 				
 				 try {
-					if(u == null) {
-						throw new NoSuchTupleException("Failed to find user with this internal ID");
-					}
 					
 					//save account info with accountsDAO
 					Account a = new Account(accesstoken, accountBase.getAccountId(), u);
