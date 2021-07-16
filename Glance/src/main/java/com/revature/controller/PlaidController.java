@@ -6,6 +6,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -82,7 +86,7 @@ public class PlaidController {
 	 * @return String [] of accessToken and itemId
 	 */
 	@PostMapping(value="linktoken/exchange")
-	public String[] exchangeToken(@RequestBody String publicToken) throws IOException {
+	public String[] exchangeToken(HttpServletResponse rep, HttpServletRequest req, @RequestBody String publicToken) throws IOException {
 		System.out.println(publicToken);
 		String public_token = publicToken.substring(0, (publicToken.length() - 1));
 		System.out.println(public_token);
@@ -97,8 +101,30 @@ public class PlaidController {
 		access_tokens[1] = response.body().getItemId();
 		
 		//write more code here to persist these to the DB where they belong
-		
+		tokenManager(rep,req,access_tokens[0]);
 		return access_tokens;
+	}
+	
+	/**
+	 * Token manager to save the plaidAccessToken as a cookie to the current session.
+	 * @param response The Http response
+	 * @param request The Http request
+	 * @param plaidAccessToken the access token that was created by plaid.
+	 */
+	private void tokenManager(HttpServletResponse response, HttpServletRequest request, String plaidAccessToken) {
+		final String cookieName = "plaidAccessToken";
+		final String cookieValue = plaidAccessToken;
+		final boolean useSecureCookie = false;
+		final int expiryTime = 60* 60 * 24;
+		final String cookiePath = "/";
+		
+		Cookie cookie = new Cookie(cookieName, cookieValue);
+		
+		cookie.setSecure(useSecureCookie);
+		cookie.setMaxAge(expiryTime);
+		cookie.setPath(cookiePath);
+		
+		response.addCookie(cookie);
 	}
 	
 	/**
