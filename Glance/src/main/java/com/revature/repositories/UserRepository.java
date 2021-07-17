@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.revature.entities.User;
 
 /**
- * User Repository for glance users.
+ * User Repository provides all CRUD operations for user objects..
  * @author Kyle Castillo
  * @version 0.0.1
  */

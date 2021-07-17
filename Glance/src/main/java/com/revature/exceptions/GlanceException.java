@@ -2,6 +2,7 @@ package com.revature.exceptions;
 
 /*
  * General Exception for unspecified errors
+ * @author : Jack Walsh
  */
 
 public class GlanceException extends RuntimeException{

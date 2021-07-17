@@ -9,6 +9,12 @@ import org.springframework.stereotype.Repository;
 
 import com.revature.entities.Goal;
 
+/**
+ * The goal repository will provide CRUD operations for Goal objects necessary for functionality in future release.
+ * This pertains to a future release functionality and should not be used in the current release.
+ * @author Kyle Castillo
+ *
+ */
 @Repository
 public interface GoalRepository extends JpaRepository<Goal,Integer>{
 	

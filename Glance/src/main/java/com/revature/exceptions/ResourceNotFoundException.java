@@ -1,9 +1,10 @@
 package com.revature.exceptions;
 
 
-/*
+/**
  * Exception thrown when a front end resource
  * like a webpage was unable to be found
+ * @author : Jack Walsh
  */
 
 
