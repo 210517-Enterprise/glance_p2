@@ -19,6 +19,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Represents a goal within the Glance application holding the necessary information to display goal information to a user on demand.
+ * 
+ * This entity is required for next version new functionality, but should not be used within the current release.
+ * 
+ * The the user_id provides foreign key functionality to link a goal to a user.
+ * The account_id provides foreign key functionality to link a goal to a specific account.
+ * @author Kyle Castillo
+ *
+ */
 @Data @NoArgsConstructor
 @Entity @Table(name="goals")
 public class Goal {
@@ -54,8 +64,8 @@ public class Goal {
 	 * Primary constructor for goal object.
 	 * @param goalName the name of the goal.
 	 * @param goalAmount the amount the goal needs to achieve.
-	 * @param userId a foreign key reference to the owner. The owner my have multiple goals making this one to many
-	 * @param accountId a reference to the plaid account id for the particular user.
+	 * @param userId a foreign key reference to the owner.
+	 * @param accountId a reference to the account id associated with this goal.
 	 */
 	public Goal(@NotEmpty String goalName, @NotEmpty int goalAmount, @NotNull int userId, @NotNull Account account) {
 		super();

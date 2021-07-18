@@ -38,7 +38,11 @@ import com.plaid.client.request.PlaidApi;
 import retrofit2.Response;
 
 
-
+/**
+ * Controller that provides an interface with the Plaid API and manages all API calls.
+ * @author James Butler and Nse Obot.
+ *
+ */
 @RestController
 @RequestMapping("/api")
 public class PlaidController {
@@ -47,6 +51,9 @@ public class PlaidController {
 	  private final ApiClient apiClient;
 	  HashMap<String, String> apiKeys = new HashMap<String, String>();
 	
+	  /**
+	   * Constructor for the plaid controller which also sets its base configuration.
+	   */
 	public PlaidController () {
 		apiKeys.put("clientId", "60e742aabd21f9000f425a75");
 		apiKeys.put("secret", "3bb6bef69833623e0e66d14abd6950");
@@ -57,8 +64,9 @@ public class PlaidController {
 	}
 	
 	/**
-	 * Retrieves link token
-	 * @return LinkToken
+	 * Retrieves a new link token to begin the link process with the Plaid API. LINK is a black box front-end component that consumes LinkToken.
+	 * @return A LinkToken for consumption by the LINK component within the front end.
+	 * @throws IOException Thrown if there is a problem with Plaid or, more likely, it was configured improperly above.
 	 */
 	@PostMapping(value="linktoken/create", produces = MediaType.APPLICATION_JSON_VALUE)
 	public LinkToken createToken () throws IOException {
@@ -84,6 +92,14 @@ public class PlaidController {
 	 * Retrieves access token
 	 * @param String publicToken
 	 * @return String [] of accessToken and itemId
+	 */
+	/**
+	 * Takes in a public token provided by LINK and exchanges it for an access token that is tied to a specific set of accounts in Plaid and a specific user in Glance.
+	 * @param rep The HTTP Response which is used for cookie management
+	 * @param req The HTTP request which is used for cookie management
+	 * @param publicToken An intermediary token (valid for 30 minutes) that was provided by the LINK component and will be exchanged.
+	 * @return accessToken The access token needed for future interaction with the Plaid API. It is used in calls to the API to return information bound for a specific person and from a specific institution. A User must have a token for EACH institution they wish to view information form.
+	 * @throws IOException Thrown for any errors encountered, primarily from failure of LINK or bad configuration of the Plaid API client.
 	 */
 	@PostMapping(value="linktoken/exchange")
 	public String[] exchangeToken(HttpServletResponse rep, HttpServletRequest req, @RequestBody String publicToken) throws IOException {
@@ -127,10 +143,12 @@ public class PlaidController {
 		response.addCookie(cookie);
 	}
 	
+	
 	/**
-	 * Retrieves account balances
-	 * @param String accessToken
-	 * @return account balance as json String
+	 * Retrieves account "balances." Despite the name, the "balances" contain all relevant account data, such as IDs, institutions, and account types in addition to the actual balances. The name is chosen by the Plaid API and reflects that Balances always returns the most current information instead of information from Plaid's cache.
+	 * @param accessToken The Access Token from LINK. 
+	 * @return A JSON object containing the information for every account associated with an access token. Further processed elsewhere.
+	 * @throws IOException Thrown for any error in the Plaid API or invalid input.
 	 */
 	@GetMapping(value="balances/get")
 	public AccountsGetResponse getAccounts(@RequestBody String accessToken) throws IOException {
@@ -148,6 +166,10 @@ public class PlaidController {
 	    return response.body();
 	  }
 
+	/**
+	 * Utility class to hold the LinkToken, which is produced and consumed entirely within the Plaid Controller and is not needed anywhere else.
+	 *
+	 */
 	public static class LinkToken {
 	    @JsonProperty
 	    public String linkToken;
@@ -160,7 +182,7 @@ public class PlaidController {
 	
 	/**
 	 * Retrieves account transactions
-	 * @param String accessToken
+	 * @param accessToken The Access Token from LINK.
 	 * @return account transactions as json String
 	 */
 	@PostMapping(value="transactions/get")

@@ -19,13 +19,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
 /**
- * Accounts entity for the glance application. The account entity should be used
- * when adding an account via plaid which provides an item and access key to that
- * account.<br>
+ * Represents an account within the application holding information from the Plaid API necessary to retrieve account information on an as needed basis within the application. <br/>
  * 
- * In addition to that a user id will be set as a foreign key to refer to the user
- * that owns the particular account.
+ * The user provides foreign key functionality to link users to their accounts.
+ * The goal provides foreign key functionality to accounts to a goal for future functionality improvements not yet implemented.
+ * The plaid_key provides the plaid based account id that is used for retrieval of further information from the Plaid API.
+ * The plaid_item is the unique identifier of the item in the Plaid API the account is associated with. This value is necessary for support requests from Plaid.
  * @author Kyle Castillo
  *
  */
@@ -57,10 +58,12 @@ public class Account {
 	@Column(name="creation_date")
 	private @Getter Date creationDate;
 	
+	
 	/**
-	 * Constructor for the account entity.
-	 * @param plaidItem the plaid item provided when adding an account from plaid
-	 * @param plaidKey
+	 * Parameterized constructor for an account object that sets necessary values for an account object. 
+	 * @param plaidItem : unique identifier of the item in the Plaid API the account is associated with. This value is necessary for support requests from Plaid
+	 * @param plaidKey : the plaid based account id that is used for retrieval of further information from the Plaid API.
+	 * @param user : the user the account is associated with.
 	 */
 	public Account(@NotNull String plaidItem, @NotNull String plaidKey, @NotNull User user) {
 		super();
