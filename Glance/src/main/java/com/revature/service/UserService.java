@@ -187,7 +187,7 @@ import com.revature.exceptions.*;
 					Account a = new Account(accesstoken, accountBase.getAccountId(), u);
 					Account savedAcc = accRepo.save(a);
 					
-					System.out.println("\t--Saved Account:");
+					//System.out.println("\t--Saved Account:");
 					if(savedAcc == null) {
 						throw new IllegalArgumentException();
 					}
@@ -260,10 +260,9 @@ import com.revature.exceptions.*;
 	 			{
 	 				
 					if(ab.getAccountId().equals(plaidID)) {
-						System.out.println("------------------------------------------\n");
-						System.out.println("Info from Plaid on account: \n");
-						ab.toString();
-						System.out.println("------------------------------------------\n");
+						//System.out.println("------------------------------------------\n");
+						//System.out.println("Info from Plaid on account: \n");
+						//System.out.println("------------------------------------------\n");
 						return ab.toString();
 					}
 				}
@@ -311,6 +310,8 @@ import com.revature.exceptions.*;
 			return transactionsList;
 		} catch (IOException e) {
 			throw new PlaidException("Problem reading account data from Plaid with this accessToken");
+		} catch (NullPointerException e) {
+			throw new NoSuchTupleException("No account exists with this plaidID");
 		}
  		
  	}

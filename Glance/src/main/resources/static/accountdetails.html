@@ -9,8 +9,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Glance - Account Details</title>
 
-    <script src="scripts/transactions.js"></script>
-
+    <script src="js/transactions.js"></script>
 
       <style>
 
@@ -24,7 +23,6 @@
 
         #acc-link-title {
           text-align: center;
-          color: #fff;
           font-size: larger;
           line-height: inherit;
 
@@ -35,6 +33,18 @@
           height: auto;
           position: relative;
           margin: 0;
+        }
+
+        /* our link back to overview */
+        #acc-link-title > a {
+          color: #fff;
+          text-decoration: none;
+        }
+
+        /* our link back to overview on hover */
+        #acc-link-title > a:hover {
+          color: #fff;
+          text-decoration: none;
         }
 
         #sec-acc-details {
@@ -51,7 +61,8 @@
           color: black;
           font-weight: 700;
           text-decoration: none;
-          font-size:large ;
+          font-size:large;
+          white-space: nowrap;
         }
 
         .acc-link-list {
@@ -62,7 +73,9 @@
         /* we have a div explicitly for our navBar title and then this div which wraps 
             them both together and spans 2/3rds of its 3 row bootstrap collumn alotment*/
         .acc-link-wrapper {
-          width: 66%;
+          width: min-content;
+          max-width: 80%;
+          min-width: 66%;
           background-color: rgb(219, 216, 216);
           border: 2px solid #1760a0;
         }
@@ -125,8 +138,8 @@
                       </div>
 
                       <ul id="list-for-acc-links" class="nav flex-column nav-pills">
-                        <li class="acc-link-list"><a href="link.html" class="acc-link">Account 1</a></li>
-                        <li class="acc-link-list"><a href="link.html" class="acc-link">Account 2</a></li>
+                       <!-- <li class="acc-link-list"><a href="link.html" class="acc-link">Account 1</a></li> -->
+                        <!-- <li class="acc-link-list"><a href="link.html" class="acc-link">Account 2</a></li> -->
                         <!-- Other account links generated via JS -->
                       </ul>
 
@@ -175,9 +188,11 @@
                       <caption id="summaryTableCaption">Recent Transactions</caption>
                       <thead id="summaryTableHead">
                         <tr>
-                        <th>Account Name:</th>
-                        <th>Current Balance:</th>
-                        <th>Available Balance:</th>
+                        <th>Date</th>
+                        <th>Vendor</th>
+                        <th>Amount</th>
+                        <th>Categories</th>
+                        <th>Pending</th>
                         </tr>
                       </thead>
                     </table>

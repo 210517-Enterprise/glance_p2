@@ -69,7 +69,7 @@ function pullValue(plaidTx, quantity) {
     temp[0] = temp[0].replace(new RegExp(`${quantity}`, "g"), "");
 
     //return value
-    console.log("Returning: " + temp);
+    //console.log("Returning: " + temp);
     return temp[0];
 }
 
@@ -78,19 +78,13 @@ function pullValue(plaidTx, quantity) {
 /* DYNAMIC WEB BASED JS DOWN HERE */
 
 window.onload = function() {
-    let pageData = getDataOnLoad();
-
-    //Sends link to overview page, links to all other accounts
-    addAccountLinks(pageData[0], pageData[1]);
+    getDataOnLoad();
 }
 
 
 
 //Await data from backend
-    //retains array [linkToAccountsOverview, [invididual account links], [accDetails], [accTransactions]]
-
-    //pageData is the array (of arrays) we will return from this method
-    let pageData = [];
+    //calls functions to build pages in js
 async function getDataOnLoad() {
 
 
@@ -98,7 +92,7 @@ async function getDataOnLoad() {
     let params = document.cookie.split("; ");
     const userID = params[0];
     const  isLogged = params[1];
-    const  accIDs = params[2];
+    const  accIDs = params[2].split("accounts=")[1].split("---");
     const activeAcc = params[3];
     const accessToken = params[4];
 
@@ -106,62 +100,108 @@ async function getDataOnLoad() {
     //Get Account Overview page link
     let overviewURL = `/getAccounts?${userID}`;
     console.log("url = " + overviewURL);
-    pageData.push(overviewURL)
 
     //Get Individual account links
     let response = await fetch(overviewURL);
     accounts = await response.json();
-    console.log("All account data: " + accounts);
+    //console.log("All account data: " + accounts);
 
     //multi dim arrat contains [[accLink1, accName1], [accLink2...]]
     accountLinks = [];
+    var num = 1;
     accIDs.map( id => {
-        accountLinks.push([`/getAccount?plaidAccID=${id}`, `Account ${id}`]);
+        accountLinks.push([`/getAccount?plaidAccID=${id}`, `Account ${num++}`]);
+        //need an onclick event to change the cookie
     });
-    pageData.push(accountLinks);
+    console.log("accountLinks array: " + accountLinks);
+    addAccountLinks(overviewURL, accountLinks);
 
     //Get account details for THIS account
     let accountURL = `/getAccount?${activeAcc}`
     let responseAcc = await fetch(accountURL);
     let accountDetails = await responseAcc.json();
     console.log("Single account data: " + accountDetails);
-    pageData.push(accountDetails);
+    buildAccDetails(accountDetails);
     
     //Get account transactions for THIS account
     let transactionURL = `/getTransactions`
-    let responseTrans = await fetch(tranasctionURL);
+    let responseTrans = await fetch(transactionURL);
     trans = await responseTrans.json();
     console.log("Single transaction data: " + trans);
-    pageData.push(trans);
 
-    return pageData;
+    viewables = parseTransactions(trans);
+    console.log("MADE IT PAST PARSE TRANSACTIONS" + viewables);
+    //buildChart(viewables);
+    //buildTable(viewables);
 }
-
 
 
 
 //Add accounts dynamically to navbar
     // accountsOverviewURL - string URL back to accounts overview for this user
     // 
-function addAccountLinks(accountsOverviewURL, accountLinks) {
+async function addAccountLinks(accountsOverviewURL, accountLinks) {
 
     //"Accounts" section header links back to overview
     document.getElementById("accounts-overview-link").href = accountsOverviewURL;
 
     //Each "Account k" links to that account page
     let htmlList = document.getElementById("list-for-acc-links");
-    accountLinks.array.forEach(accLink => {
+    accountLinks.forEach(accLink => {
         htmlList.innerHTML = htmlList.innerHTML +
-         `<li class="acc-link-list"><a href="${accLink[0]}" class="acc-link">${accLink[1]}</a></li>`;
+         `<li class="acc-link-list"><a href="accountDetails.html"
+          class="acc-link"
+          onClick=accDetailsOnClick(${accLink[0]})> 
+          ${accLink[1]}</a></li>`;
     });
+}
 
-    //need to dom.innerHTML
+//onlick function with parameters for sending user to different acc details pages
+function accDetailsOnClick(newAcc) {
+    document.cookie = `activeAccount=$newAcc`;
 }
 
 
 
+//Builds Account details Section
+
+/*
+    Constructor for Account consists of Mappings:
+    plaid -> our Name,
+
+    account_id -> account_id (not displayed)
+    balances[0].stringify().current -> "Current Balance"
+    "balances" -> JSON.parse(balances[0].current) -> "Current Balance"
+    "balances" -> JSON.parse(balances[0].availible) -> "Availible Balance"
+    "name" -> "Account Name"
+    "Official Name" -> "Account Official Name"
+    "type" -> "Account Type"
+
+
+*/
+const accQuantities = ["account_id: ", "balances: ", "balances: "]
+function Account(accString) {
+
+    this.account_id = pullValue(accString, accQuantities[0]);
+}
+
+
+function buildAccDetails(accData) {
+    
+    console.log("in buildACc details" + accData);
+    let detailsList = document.getElementById("acc-details-list");
+
+    accountLinks.for (const detail of accData) {
+        detailList.innerHTML = detailList.innerHTML +
+         `<li class="acc-detail">${detail}</li>`;
+    }
+
+
+}
+
+
 //Adds transactions to transactions list and builds chart
-function buildChart(data) {
+function buildChart(transData) {
     /*
         Pie chart maps expenditures to individual categories
     */
@@ -170,19 +210,26 @@ function buildChart(data) {
 }
 
 
-function buildTable(data) {
+function buildTable(transData) {
     /*
         Builds table of transactions dynamically up to 
         a certain specified number
     */
    const maxTrans = 10;
+    console.log("MADE IT INTO BUILD TABLE");
+   let table = document.getElementById("summaryTable");
+    transData.forEach(data => {
+        table.innerHTML = table.innerHTML +
+         `<tr class="trans-table-row">
+            <td>${data.date}</td>
+            <td>${data.merchantName}</td>
+            <td>${data.amount}</td>
+            <td>${data.categories}</td>
+            <td>${data.isPending}</td>
+         </tr>`;
+    });
 
 }
-
-
-
-
-
 
 
 

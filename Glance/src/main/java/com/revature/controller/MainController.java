@@ -1,6 +1,7 @@
 package com.revature.controller;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.Cookie;
@@ -124,6 +125,7 @@ public class MainController {
 		}
 	}
 	
+	
 	/**
 	 * Retrieves the information from a singular account for a given user and returns it as a string for processing in the front end for displaying singular account details.
 	 * This is a future functionality method that should not be used in the current release. 
@@ -131,18 +133,17 @@ public class MainController {
 	 * @return A string that contains the account information which will be consumed and parsed within the front end to display the account's information to the user.
 	 */
 	@GetMapping(value="/getAccount")
-	public ResponseEntity<String> getAccount(@CookieValue(activeAccountCOOKIE) Cookie activeAcc, @RequestParam String plaidAccID){
+	public ResponseEntity<String> getAccount(HttpServletResponse response, @CookieValue(activeAccountCOOKIE) Cookie activeAcc){
 		
 		
 			try {
-				String foundAccount = userService.getAccount(plaidAccID);
-				activeAcc.setValue(plaidAccID);
+				String foundAccount = userService.getAccount(activeAcc.getValue());
 				return ResponseEntity.ok(foundAccount);
 			} catch (NoSuchTupleException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 				return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
 			} catch (PlaidException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 				return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
 			}
 		}
@@ -154,12 +155,14 @@ public class MainController {
 	 * @return : a list of strings of the accounts associated with a user.
 	 */
 	@GetMapping(value="/getAccounts")
-	public ResponseEntity<List<String>> getAccounts(@CookieValue(accountsCOOKIE) Cookie accountsCookie, @RequestParam int userId){
+	public ResponseEntity<List<String>> getAccounts(HttpServletResponse response, @CookieValue(accountsCOOKIE) Cookie accountsCookie, @RequestParam int userId){
 		try {
 			List<String> foundAccounts = userService.getAllAccounts(userId);
-			System.out.println("\n USER_ID FROM PARAM: " + userId);
-			System.out.println("\n foundAccounts: " + foundAccounts);
-			addAccountCookies(accountsCookie, foundAccounts);
+			//System.out.println("\n USER_ID FROM PARAM: " + userId);
+			//System.out.println("\n foundAccounts: " + foundAccounts);
+			
+			addAccountCookies(accountsCookie, pruneAccountsForID(foundAccounts));
+			response.addCookie(accountsCookie);
 			return ResponseEntity.ok(foundAccounts);
 		} catch (NoSuchTupleException e) {
 			// TODO Auto-generated catch block
@@ -173,7 +176,24 @@ public class MainController {
 	}
 	
 	
+	/**
+	 * @param accs - full accounts that will be parsed for their ids 
+	 * @return List<String> - list of pure account ids 
+	 */
+	private List<String> pruneAccountsForID(List<String> accs) {
+		List<String> accIDs = new ArrayList<>();
+		final String term = "accountId: ";
+		final String delim = "\n";
+		
+		//isolates id from grand string by splitting it
+		accs.forEach(s -> accIDs.add(s.split(term)[1].split(delim)[0]));	
+		
+		System.out.println("Just the id: " + accIDs);
+		System.out.println("\n\n\n");
+		return accIDs;
+	}
 
+	
 	/**
 	 * Returns the list of transactions associated with a singular account for a user as a list of strings to be parsed and displayed within the front end. 
 	 * This is a future functionality method that should not be used in the current release.
@@ -187,10 +207,10 @@ public class MainController {
 			List<String> transactions = userService.getTransactionsForAccount(activeAcc.getValue());
 			return ResponseEntity.ok(transactions);
 		} catch (NoSuchTupleException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		} catch (PlaidException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
@@ -209,6 +229,7 @@ public class MainController {
 		//Returning to index.html
 		return new RedirectView("/index.html");
 	}
+	
 	
 	/**
 	 * A utility method that sets the user session cookie on successful login or registration. This method should only be called from within functions providing login or registration functionality.
@@ -239,8 +260,8 @@ public class MainController {
 		
 		Cookie userIsLoggedInCookie = new Cookie(userIsLoggedInCOOKIE, userIsLoggedInCookieValue);
 		Cookie userIdCookie = new Cookie(userIdNameCOOKIE, userIdCookieValue);
-		Cookie accounts = new Cookie(accountsCOOKIE, "[]");
-		Cookie activeAccount = new Cookie(activeAccountCOOKIE, "0");
+		Cookie accounts = new Cookie(accountsCOOKIE, "");
+		Cookie activeAccount = new Cookie(activeAccountCOOKIE, "qBxX33VrbMHknnnKdkVEckMWP6BGoGUJpyy5m");
 		
 		Cookie[] arr = new Cookie[] {userIdCookie, userIsLoggedInCookie, accounts, activeAccount};
 		
@@ -270,16 +291,16 @@ public class MainController {
 			List<String> accIDs) {
 		
 		//add all account id's from found accounts
-		StringBuilder temp = new StringBuilder("[");
-		accIDs.forEach(id -> temp.append(id + ","));
-		String value = accIDs.size() > 1 ? temp.substring(0, temp.length()-2) + "]" : "[]";
+		StringBuilder temp = new StringBuilder("");
+		accIDs.forEach(id -> temp.append(id + "---"));
+		String value = accIDs.size() > 1 ? temp.substring(0, temp.length()-3) : "";
 		accountsCookie.setValue(value);
 		
-		System.out.println("\n------------------------");
-		System.out.println("ACCOUNT COOKIES: " + value);
-		System.out.println("\n------------------------");
-		
-		
+		/*
+		 * System.out.println("\n------------------------");
+		 * System.out.println("ACCOUNT COOKIES: " + accountsCookie.getValue());
+		 * System.out.println("\n------------------------");
+		 */
 	}
 	//END ADD_ACCOUNT_COOKIES
 	

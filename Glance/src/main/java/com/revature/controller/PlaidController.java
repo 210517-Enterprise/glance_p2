@@ -103,7 +103,7 @@ public class PlaidController {
 	 */
 	@PostMapping(value="linktoken/exchange")
 	public String[] exchangeToken(HttpServletResponse rep, HttpServletRequest req, @RequestBody String publicToken) throws IOException {
-		System.out.println(publicToken);
+		//System.out.println(publicToken);
 		String public_token = publicToken.substring(0, (publicToken.length() - 1));
 		System.out.println(public_token);
 		String[] access_tokens = new String[2];
@@ -155,14 +155,14 @@ public class PlaidController {
 	    AccountsBalanceGetRequest request = new AccountsBalanceGetRequest()
 	      .accessToken(accessToken);
 
-	    System.out.println(accessToken);
-	    System.out.println(request);
+	    //System.out.println(accessToken);
+	    //System.out.println(request);
 	    
 	    Response<AccountsGetResponse> response = plaidClient
 	      .accountsBalanceGet(request)
 	      .execute();
 	    
-	    System.out.println(response);
+	    //System.out.println(response);
 	    return response.body();
 	  }
 

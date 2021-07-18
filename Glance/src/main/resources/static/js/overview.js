@@ -8,6 +8,14 @@ window.onload = function() {
 
 let getAccounts = async function() {
   let params = document.cookie.split("; ");
+  
+  //Check if user attempted to bypass login
+  if(!params[1]) {
+	  // Redirect to /index.html
+	window.location.replace("/index.html");
+  }
+  
+  
   let url = `/getAccounts?${params[0]}`;
   console.log("url is being changed = " + url);
   console.log("PARAMS = " + params);
