@@ -9,7 +9,8 @@ window.onload = function() {
 let getAccounts = async function() {
   let params = document.cookie.split("; ");
   let url = `/getAccounts?${params[0]}`;
-  console.log("url = " + url);
+  console.log("url is being changed = " + url);
+  console.log("PARAMS = " + params);
   let response = await fetch(url);
   accounts = await response.json();
   console.log(accounts);

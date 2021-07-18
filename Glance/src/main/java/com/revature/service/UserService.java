@@ -156,6 +156,8 @@ import com.revature.exceptions.*;
  		AccountsGetResponse returnInfo = null;
 			try {
 				 returnInfo = plaidUtil.getAccounts(accesstoken);
+				 System.out.println("\n RETURN FROM PLAID WITH: " + returnInfo);
+				 System.out.println("\n\n------------------------");
 			} catch (IOException e) {
 				throw new PlaidException("Problem reading account data from Plaid with this accessToken");
 			}
@@ -185,6 +187,7 @@ import com.revature.exceptions.*;
 					Account a = new Account(accesstoken, accountBase.getAccountId(), u);
 					Account savedAcc = accRepo.save(a);
 					
+					System.out.println("\t--Saved Account:");
 					if(savedAcc == null) {
 						throw new IllegalArgumentException();
 					}

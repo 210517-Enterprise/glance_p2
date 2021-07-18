@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -153,10 +154,12 @@ public class MainController {
 	 * @return : a list of strings of the accounts associated with a user.
 	 */
 	@GetMapping(value="/getAccounts")
-	public ResponseEntity<List<String>> getAccounts(HttpServletRequest request, HttpServletResponse response, @RequestParam int userId){
+	public ResponseEntity<List<String>> getAccounts(@CookieValue(accountsCOOKIE) Cookie accountsCookie, @RequestParam int userId){
 		try {
 			List<String> foundAccounts = userService.getAllAccounts(userId);
-			addAccountCookies(request, response, foundAccounts);
+			System.out.println("\n USER_ID FROM PARAM: " + userId);
+			System.out.println("\n foundAccounts: " + foundAccounts);
+			addAccountCookies(accountsCookie, foundAccounts);
 			return ResponseEntity.ok(foundAccounts);
 		} catch (NoSuchTupleException e) {
 			// TODO Auto-generated catch block
@@ -215,9 +218,9 @@ public class MainController {
 	 */
 	
 	//Cookie ID's should be accessible everywhere so they can be accessed and eddited if necessary
-	final String userIdCookieName = "userId";
-	final String userIsLoggedIn = "userIsLoggedIn";
-	final String accountsName = "accounts";
+	final String userIdNameCOOKIE = "userId";
+	final String userIsLoggedInCOOKIE = "userIsLoggedIn";
+	final String accountsCOOKIE = "accounts";
 	private void userCookieManager(HttpServletRequest request, HttpServletResponse response, User u) 
 	{
 		//User Cookie
@@ -226,23 +229,16 @@ public class MainController {
 		//logged In Flag
 		final String userIsLoggedInCookieValue = "True";
 		
-		//Accounts Cookie
-		StringBuilder temp = new StringBuilder("[");
-		u.getAccounts().forEach(a -> temp.append(a.getPlaidKey() + ","));
-		final String accountsValue = temp.substring(0, temp.length()-2) + "]";
-		
-		System.out.println("\n------------------------");
-		System.out.println("ACCOUNT COOKIES: " + accountsValue);
-		System.out.println("\n------------------------");
+		//Acccount IDs
 		
 		final boolean useSecureCookie = false;
 		final int expiryTime = 60* 60 * 24;
 		final String cookiePath = "/";
 		
 		
-		Cookie userIsLoggedInCookie = new Cookie(userIsLoggedIn, userIsLoggedInCookieValue);
-		Cookie userIdCookie = new Cookie(userIdCookieName, userIdCookieValue);
-		Cookie accounts = new Cookie(accountsName, accountsValue);
+		Cookie userIsLoggedInCookie = new Cookie(userIsLoggedInCOOKIE, userIsLoggedInCookieValue);
+		Cookie userIdCookie = new Cookie(userIdNameCOOKIE, userIdCookieValue);
+		Cookie accounts = new Cookie(accountsCOOKIE, "[]");
 		
 		Cookie[] arr = new Cookie[] {userIdCookie, userIsLoggedInCookie, accounts};
 		
@@ -264,12 +260,22 @@ public class MainController {
 	 * 	We add a cookie for account ID's so we can access them from the front end
 	 *  We send the PLAID account ID's to the front end
 	 * 
-	 * @param request
-	 * @param response
-	 * @param foundAccounts
+	 * @param http request from front end, holds our cookies
+	 * @param response, we will add editted cookie value back here, may not need to
+	 * @param foundAccounts, list of our accounts recovered from user at this id
 	 */
-	private void addAccountCookies(HttpServletRequest request, HttpServletResponse response,
-			List<String> foundAccounts) {
+	private void addAccountCookies(Cookie accountsCookie,
+			List<String> accIDs) {
+		
+		//add all account id's from found accounts
+		StringBuilder temp = new StringBuilder("[");
+		accIDs.forEach(id -> temp.append(id + ","));
+		String value = accIDs.size() > 1 ? temp.substring(0, temp.length()-2) + "]" : "[]";
+		accountsCookie.setValue(value);
+		
+		System.out.println("\n------------------------");
+		System.out.println("ACCOUNT COOKIES: " + value);
+		System.out.println("\n------------------------");
 		
 		
 	}
