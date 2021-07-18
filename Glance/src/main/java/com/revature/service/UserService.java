@@ -228,7 +228,7 @@ import com.revature.exceptions.*;
  		 
  		for(Account a : accs) {
  		  		try {
-					String accInfo = getAccount(a.getId());
+					String accInfo = getAccount(a.getPlaidKey());
 					accData.add(accInfo);
 				} catch (NoSuchTupleException e) {
 					//Continue to next account
@@ -243,23 +243,23 @@ import com.revature.exceptions.*;
  	
  	/**
  	 * Method to fetch information for a singular account. 
- 	 * @param internalID The user's Id within the Glance database.
+ 	 * @param plaidID The user's Id within the Glance database.
  	 * @return A String containing the account information.
  	 * @throws NoSuchTupleException Thrown if an account cannot be found.
  	 * @throws PlaidException Thrown for any problems within the Plaid API
  	 */
- 	public String getAccount(int internalID) throws NoSuchTupleException, PlaidException {
+ 	public String getAccount(String plaidID) throws NoSuchTupleException, PlaidException {
  		
- 		Optional<Account> a = accRepo.findById(internalID);
+ 		Account a = accRepo.findAccountByPlaidKey(plaidID);
  		
- 		if(a.isPresent()) {
+ 		if(a != null) {
  			try {
-				AccountsGetResponse returnInfo = plaidUtil.getAccounts(a.get().getPlaidItem());
+				AccountsGetResponse returnInfo = plaidUtil.getAccounts(a.getPlaidItem());
 				
 	 			for (AccountBase ab : returnInfo.getAccounts()) 
 	 			{
 	 				
-					if(ab.getAccountId().equals(a.get().getPlaidKey())) {
+					if(ab.getAccountId().equals(plaidID)) {
 						System.out.println("------------------------------------------\n");
 						System.out.println("Info from Plaid on account: \n");
 						ab.toString();
@@ -276,7 +276,7 @@ import com.revature.exceptions.*;
  		}
  		
  		//If we reach here the account was not present or has no matching plaid key
- 		throw new NoSuchTupleException("Could not find account with ID: " + internalID);
+ 		throw new NoSuchTupleException("Could not find account with ID: " + plaidID);
  		
  	}
  	// END GETACCOUNT

@@ -131,12 +131,12 @@ public class MainController {
 	 * @return A string that contains the account information which will be consumed and parsed within the front end to display the account's information to the user.
 	 */
 	@GetMapping(value="/getAccount")
-	public ResponseEntity<String> getAccount(@RequestParam int actId){
+	public ResponseEntity<String> getAccount(@CookieValue(activeAccountCOOKIE) Cookie activeAcc, @RequestParam String plaidAccID){
 		
 		
 			try {
-				String foundAccount = userService.getAccount(actId);
-				System.out.print(foundAccount);
+				String foundAccount = userService.getAccount(plaidAccID);
+				activeAcc.setValue(plaidAccID);
 				return ResponseEntity.ok(foundAccount);
 			} catch (NoSuchTupleException e) {
 				e.printStackTrace();
@@ -181,10 +181,10 @@ public class MainController {
 	 * @return
 	 */
 	@GetMapping(value="/getTransactions")
-	public ResponseEntity<List<String>> getTransactions(@RequestBody String plaidId){
+	public ResponseEntity<List<String>> getTransactions(@CookieValue(activeAccountCOOKIE) Cookie activeAcc){
 		
 		try {
-			List<String> transactions = userService.getTransactionsForAccount(plaidId);
+			List<String> transactions = userService.getTransactionsForAccount(activeAcc.getValue());
 			return ResponseEntity.ok(transactions);
 		} catch (NoSuchTupleException e) {
 			e.printStackTrace();
@@ -221,6 +221,7 @@ public class MainController {
 	final String userIdNameCOOKIE = "userId";
 	final String userIsLoggedInCOOKIE = "userIsLoggedIn";
 	final String accountsCOOKIE = "accounts";
+	final String activeAccountCOOKIE = "activeAccount";
 	private void userCookieManager(HttpServletRequest request, HttpServletResponse response, User u) 
 	{
 		//User Cookie
@@ -239,8 +240,9 @@ public class MainController {
 		Cookie userIsLoggedInCookie = new Cookie(userIsLoggedInCOOKIE, userIsLoggedInCookieValue);
 		Cookie userIdCookie = new Cookie(userIdNameCOOKIE, userIdCookieValue);
 		Cookie accounts = new Cookie(accountsCOOKIE, "[]");
+		Cookie activeAccount = new Cookie(activeAccountCOOKIE, "0");
 		
-		Cookie[] arr = new Cookie[] {userIdCookie, userIsLoggedInCookie, accounts};
+		Cookie[] arr = new Cookie[] {userIdCookie, userIsLoggedInCookie, accounts, activeAccount};
 		
 		for (Cookie c : arr) {
 			c.setSecure(useSecureCookie);

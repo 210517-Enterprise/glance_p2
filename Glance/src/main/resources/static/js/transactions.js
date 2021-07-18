@@ -87,29 +87,54 @@ window.onload = function() {
 
 
 //Await data from backend
-    //retains array [linkToAccountOverview, [invididual account links], [accDetails], [accTransactions]]
-async function getDataOnLoad() {
+    //retains array [linkToAccountsOverview, [invididual account links], [accDetails], [accTransactions]]
 
     //pageData is the array (of arrays) we will return from this method
     let pageData = [];
+async function getDataOnLoad() {
+
 
     //Get Params array as splitting cookie we hold
     let params = document.cookie.split("; ");
-    let userID = params[0];
-    let accessToken = params[0];
+    const userID = params[0];
+    const  isLogged = params[1];
+    const  accIDs = params[2];
+    const activeAcc = params[3];
+    const accessToken = params[4];
 
 
     //Get Account Overview page link
-    let url = `/getAccounts?${params[0]}`;
-    console.log("url = " + url);
-    pageData.push(url)
+    let overviewURL = `/getAccounts?${userID}`;
+    console.log("url = " + overviewURL);
+    pageData.push(overviewURL)
 
     //Get Individual account links
+    let response = await fetch(overviewURL);
+    accounts = await response.json();
+    console.log("All account data: " + accounts);
+
+    //multi dim arrat contains [[accLink1, accName1], [accLink2...]]
+    accountLinks = [];
+    accIDs.map( id => {
+        accountLinks.push([`/getAccount?plaidAccID=${id}`, `Account ${id}`]);
+    });
+    pageData.push(accountLinks);
 
     //Get account details for THIS account
-
+    let accountURL = `/getAccount?${activeAcc}`
+    let responseAcc = await fetch(accountURL);
+    let accountDetails = await responseAcc.json();
+    console.log("Single account data: " + accountDetails);
+    pageData.push(accountDetails);
+    
     //Get account transactions for THIS account
+    let transactionURL = `/getTransactions`
+    let responseTrans = await fetch(tranasctionURL);
+    trans = await responseTrans.json();
+    console.log("Single transaction data: " + trans);
+    pageData.push(trans);
 
+    return pageData;
 }
 
 
@@ -121,15 +146,17 @@ async function getDataOnLoad() {
 function addAccountLinks(accountsOverviewURL, accountLinks) {
 
     //"Accounts" section header links back to overview
+    document.getElementById("accounts-overview-link").href = accountsOverviewURL;
 
     //Each "Account k" links to that account page
+    let htmlList = document.getElementById("list-for-acc-links");
+    accountLinks.array.forEach(accLink => {
+        htmlList.innerHTML = htmlList.innerHTML +
+         `<li class="acc-link-list"><a href="${accLink[0]}" class="acc-link">${accLink[1]}</a></li>`;
+    });
 
     //need to dom.innerHTML
 }
-
-
-
-//Adds account details dynamically to Navbar
 
 
 
