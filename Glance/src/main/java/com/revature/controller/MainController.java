@@ -35,7 +35,7 @@ import com.revature.service.UserService;
 /**
  * A rest controller that provides application endpoints to the front end for user control and
  * accessing information that is tied to specific users.
- * @author Primary Author: Kyle Castillo, Secondary Authors: James Butler, Jack Walsh, Nse Obot
+ * @author Primary Author: Kyle Castillo, Secondary Authors: James Butler, Jack Welsh, Nse Obot
  *
  */
 @RestController
@@ -113,8 +113,8 @@ public class MainController {
 	 */
 	@GetMapping(value="/addAccount")
 	public @ResponseBody ResponseEntity<Account> addAccount(@RequestParam int userId, @RequestParam String plaidAccessToken) {
+		
 		System.out.println("User ID: " + " " + userId + "AccessToken: " + plaidAccessToken);
-
 		try {
 			userService.addAccounts(userId, plaidAccessToken);
 			return new ResponseEntity<Account>(HttpStatus.OK);
@@ -153,9 +153,10 @@ public class MainController {
 	 * @return : a list of strings of the accounts associated with a user.
 	 */
 	@GetMapping(value="/getAccounts")
-	public ResponseEntity<List<String>> getAccounts(@RequestParam int userId){
+	public ResponseEntity<List<String>> getAccounts(HttpServletRequest request, HttpServletResponse response, @RequestParam int userId){
 		try {
 			List<String> foundAccounts = userService.getAllAccounts(userId);
+			addAccountCookies(request, response, foundAccounts);
 			return ResponseEntity.ok(foundAccounts);
 		} catch (NoSuchTupleException e) {
 			// TODO Auto-generated catch block
@@ -168,6 +169,8 @@ public class MainController {
 		}
 	}
 	
+	
+
 	/**
 	 * Returns the list of transactions associated with a singular account for a user as a list of strings to be parsed and displayed within the front end. 
 	 * This is a future functionality method that should not be used in the current release.
@@ -175,10 +178,10 @@ public class MainController {
 	 * @return
 	 */
 	@GetMapping(value="/getTransactions")
-	public ResponseEntity<List<String>> getTransactions(@RequestBody String accountId){
+	public ResponseEntity<List<String>> getTransactions(@RequestBody String plaidId){
 		
 		try {
-			List<String> transactions = userService.getTransactionsForAccount(Integer.valueOf(accountId));
+			List<String> transactions = userService.getTransactionsForAccount(plaidId);
 			return ResponseEntity.ok(transactions);
 		} catch (NoSuchTupleException e) {
 			e.printStackTrace();
@@ -210,12 +213,27 @@ public class MainController {
 	 * @param response : The Http response
 	 * @param u : The user that was either registered or logged in.
 	 */
-	private void userCookieManager(HttpServletRequest request, HttpServletResponse response, User u) {
-		final String userIdCookieName = "userId";
+	
+	//Cookie ID's should be accessible everywhere so they can be accessed and eddited if necessary
+	final String userIdCookieName = "userId";
+	final String userIsLoggedIn = "userIsLoggedIn";
+	final String accountsName = "accounts";
+	private void userCookieManager(HttpServletRequest request, HttpServletResponse response, User u) 
+	{
+		//User Cookie
 		final String userIdCookieValue = String.valueOf(u.getId());
 		
-		final String userIsLoggedIn = "userIsLoggedIn";
+		//logged In Flag
 		final String userIsLoggedInCookieValue = "True";
+		
+		//Accounts Cookie
+		StringBuilder temp = new StringBuilder("[");
+		u.getAccounts().forEach(a -> temp.append(a.getPlaidKey() + ","));
+		final String accountsValue = temp.substring(0, temp.length()-2) + "]";
+		
+		System.out.println("\n------------------------");
+		System.out.println("ACCOUNT COOKIES: " + accountsValue);
+		System.out.println("\n------------------------");
 		
 		final boolean useSecureCookie = false;
 		final int expiryTime = 60* 60 * 24;
@@ -224,18 +242,39 @@ public class MainController {
 		
 		Cookie userIsLoggedInCookie = new Cookie(userIsLoggedIn, userIsLoggedInCookieValue);
 		Cookie userIdCookie = new Cookie(userIdCookieName, userIdCookieValue);
+		Cookie accounts = new Cookie(accountsName, accountsValue);
 		
-		userIdCookie.setSecure(useSecureCookie);
-		userIdCookie.setMaxAge(expiryTime);
-		userIdCookie.setPath(cookiePath);
+		Cookie[] arr = new Cookie[] {userIdCookie, userIsLoggedInCookie, accounts};
 		
-		userIsLoggedInCookie.setSecure(useSecureCookie);
-		userIsLoggedInCookie.setMaxAge(expiryTime);
-		userIsLoggedInCookie.setPath(cookiePath);
+		for (Cookie c : arr) {
+			c.setSecure(useSecureCookie);
+			c.setMaxAge(expiryTime);
+			c.setPath(cookiePath);
+			
+			response.addCookie(c);
+		}
 		
-		response.addCookie(userIdCookie);
-		response.addCookie(userIsLoggedInCookie);
 	}
+	//END COOKIE MANAGER METHOD
+	
+	
+	
+	
+	/**
+	 * 	We add a cookie for account ID's so we can access them from the front end
+	 *  We send the PLAID account ID's to the front end
+	 * 
+	 * @param request
+	 * @param response
+	 * @param foundAccounts
+	 */
+	private void addAccountCookies(HttpServletRequest request, HttpServletResponse response,
+			List<String> foundAccounts) {
+		
+		
+	}
+	//END ADD_ACCOUNT_COOKIES
+	
 	
 	/**
 	 * A utility method that clears all session cookies. This method should only be called from within other methods that provide logout functionality.

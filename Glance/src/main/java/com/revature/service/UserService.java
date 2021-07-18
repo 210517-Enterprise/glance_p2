@@ -289,18 +289,18 @@ import com.revature.exceptions.*;
  	 * @throws NoSuchTupleException Thrown if no transaction can be found.
  	 * @throws PlaidException Thrown for all errors within the Plaid Api.
  	 */
- 	public List<String> getTransactionsForAccount(int internalID) throws NoSuchTupleException, PlaidException 
+ 	public List<String> getTransactionsForAccount(String plaidID) throws NoSuchTupleException, PlaidException 
  	{
  		
  		try {
-			TransactionsGetResponse transactions = plaidUtil.getTransactions(accRepo.findPlaidItemById(internalID));
+			TransactionsGetResponse transactions = plaidUtil.getTransactions(
+					accRepo.findAccountByPlaidKey(plaidID).getPlaidItem());
 			
 			List<Transaction> temp = transactions.getTransactions();
 			List<String> transactionsList = new ArrayList<>();
 			
 			for(Transaction t : temp) {
-				String tempPlaid = accRepo.findPlaidKeyById(internalID);
-				if (accRepo.findPlaidKeyById(internalID).equals(t.getAccountId())) {
+				if (plaidID.equals(t.getAccountId())) {
 					transactionsList.add(t.toString());
 				}
 			}

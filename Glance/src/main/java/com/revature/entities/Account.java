@@ -52,7 +52,7 @@ public class Account {
 	private @Getter @Setter String plaidItem;
 	
 	@NotNull
-	@Column(nullable=false, name="plaid_key")
+	@Column(nullable=false, name="plaid_key", unique=true)
 	private @Getter @Setter String plaidKey;
 	
 	@Column(name="creation_date")

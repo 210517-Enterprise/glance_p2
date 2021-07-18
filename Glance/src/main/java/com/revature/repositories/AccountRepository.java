@@ -30,6 +30,14 @@ public interface AccountRepository extends JpaRepository<Account, Integer>{
 	 */
 	List<Account> findAccountByPlaidItem(String plaidItem);
 	
+	
+	
+	/**
+	 * @param plaidKey takes the alphaNumeric key as provided by plaid
+	 * @return a single account
+	 */
+	Account findAccountByPlaidKey(String plaidKey);
+	
 	/**
 	 * Returns a specific plaidItem for an <code>Account</code> which can be used to to query the Plaid API for additional accounts that are within the same group within the Plaid API.
 	 * @param id The internal account id for the account.
