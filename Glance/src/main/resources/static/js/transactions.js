@@ -78,15 +78,31 @@ function pullValue(plaidTx, quantity) {
 /* DYNAMIC WEB BASED JS DOWN HERE */
 
 window.onload = function() {
-    getDataOnLoad();
+    let pageData = getDataOnLoad();
 
-    addAccountLinks();
+    //Sends link to overview page, links to all other accounts
+    addAccountLinks(pageData[0], pageData[1]);
 }
 
+
+
 //Await data from backend
-function getDataOnLoad() {
+    //retains array [linkToAccountOverview, [invididual account links], [accDetails], [accTransactions]]
+async function getDataOnLoad() {
+
+    //pageData is the array (of arrays) we will return from this method
+    let pageData = [];
+
+    //Get Params array as splitting cookie we hold
+    let params = document.cookie.split("; ");
+    let userID = params[0];
+    let accessToken = params[0];
+
 
     //Get Account Overview page link
+    let url = `/getAccounts?${params[0]}`;
+    console.log("url = " + url);
+    pageData.push(url)
 
     //Get Individual account links
 
