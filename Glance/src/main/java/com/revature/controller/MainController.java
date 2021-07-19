@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import com.plaid.client.model.AccountBase;
 import com.revature.entities.Account;
 //Glance Project Includes
 import com.revature.entities.User;
@@ -133,14 +134,17 @@ public class MainController {
 	 * @return A string that contains the account information which will be consumed and parsed within the front end to display the account's information to the user.
 	 */
 	@GetMapping(value="/getAccount")
-	public ResponseEntity<String> getAccount(HttpServletResponse response, @CookieValue(activeAccountCOOKIE) Cookie activeAcc){
+	public ResponseEntity<AccountBase> getAccount(HttpServletResponse response, @CookieValue(activeAccountCOOKIE) Cookie activeAcc){
 		
 		
 			try {
-				String foundAccount = '"' + userService.getAccount(activeAcc.getValue()) + '"';
-				  System.out.println("\n------------------------");
-				  System.out.println("RETURNING ACCOUNT: " + foundAccount);
-				  System.out.println("\n------------------------");
+				AccountBase foundAccount = userService.getAccount(activeAcc.getValue());
+				
+				/*
+				 * System.out.println("\n------------------------");
+				 * System.out.println("RETURNING ACCOUNT: " + foundAccount);
+				 * System.out.println("\n------------------------");
+				 */
 				
 				return ResponseEntity.ok(foundAccount);
 			} catch (NoSuchTupleException e) {
@@ -197,6 +201,9 @@ public class MainController {
 		return accIDs;
 	}
 
+	private String escapeNewLines(String badString) {
+		return badString.replace("\n", "\\n");
+	}
 	
 	/**
 	 * Returns the list of transactions associated with a singular account for a user as a list of strings to be parsed and displayed within the front end. 
@@ -210,10 +217,12 @@ public class MainController {
 		try {
 			List<String> transactions = userService.getTransactionsForAccount(activeAcc.getValue());
 			
-			  System.out.println("\n------------------------");
-			  System.out.println("RETURNING transaction: " + transactions);
-			  System.out.println("\n------------------------");
-			
+			/*
+			 * System.out.println("\n------------------------");
+			 * System.out.println("RETURNING transaction: " + transactions);
+			 * System.out.println("\n------------------------");
+			 * 
+			 */
 			
 			return ResponseEntity.ok(transactions);
 		} catch (NoSuchTupleException e) {

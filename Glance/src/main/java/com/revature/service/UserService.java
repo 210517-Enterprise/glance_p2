@@ -227,7 +227,7 @@ import com.revature.exceptions.*;
  		 
  		for(Account a : accs) {
  		  		try {
-					String accInfo = getAccount(a.getPlaidKey());
+					String accInfo = getAccount(a.getPlaidKey()).toString();
 					accData.add(accInfo);
 				} catch (NoSuchTupleException e) {
 					//Continue to next account
@@ -247,7 +247,7 @@ import com.revature.exceptions.*;
  	 * @throws NoSuchTupleException Thrown if an account cannot be found.
  	 * @throws PlaidException Thrown for any problems within the Plaid API
  	 */
- 	public String getAccount(String plaidID) throws NoSuchTupleException, PlaidException {
+ 	public AccountBase getAccount(String plaidID) throws NoSuchTupleException, PlaidException {
  		
  		Account a = accRepo.findAccountByPlaidKey(plaidID);
  		//System.out.println("id: " + plaidID + "  and accoutn returned " + a.getId());
@@ -268,7 +268,7 @@ import com.revature.exceptions.*;
 						//System.out.println("------------------------------------------\n");
 						//System.out.println("Info from Plaid on account: \n");
 						//System.out.println("------------------------------------------\n");
-						return ab.toString();
+						return ab;
 					}
 				}
 	 			//END FOR, exception thrown if we reach here

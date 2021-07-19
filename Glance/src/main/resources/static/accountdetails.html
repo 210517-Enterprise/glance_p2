@@ -16,14 +16,11 @@
 
         /**** SPECIFIC ENTITY STYLING ****/
 
-        /* Simple acc detail header */
-        #acc-detail-header {
-          text-align: center;
-        }
+                /* Link Styling */
 
         #acc-link-title {
           text-align: center;
-          font-size: larger;
+          font-size: x-large;
           line-height: inherit;
 
           background-color: #1760a0;
@@ -39,17 +36,38 @@
         #acc-link-title > a {
           color: #fff;
           text-decoration: none;
+
         }
 
         /* our link back to overview on hover */
         #acc-link-title > a:hover {
           color: #fff;
           text-decoration: none;
+          font-weight: bold;
+        }
+
+
+              /* Acc Details Styling */
+
+        /* Simple acc detail header */
+        #acc-detail-header {
+          text-align: center;
+          font-weight: bold;
         }
 
         #sec-acc-details {
           height: 100%;
           margin-top: 20%;
+        }
+
+              /* Table Styling */
+        .summary-table > li {
+          text-align: center;
+        }
+
+        #summary-table-title {
+          text-align: center;
+          font-weight: bold;
         }
 
 
@@ -63,19 +81,20 @@
           text-decoration: none;
           font-size:large;
           white-space: nowrap;
+          text-align: left;
         }
 
         .acc-link-list {
           list-style-type: disc;
           margin-bottom: 1em;
           text-align:left ;
+          float: left;
         }
 
         /* we have a div explicitly for our navBar title and then this div which wraps 
             them both together and spans 2/3rds of its 3 row bootstrap collumn alotment*/
         .acc-link-wrapper {
-          width: max-content;
-          max-width: 80%;
+          width: fit-content;
           min-width: 66%;
 
           background-color: rgb(219, 216, 216);
@@ -92,6 +111,8 @@
           border: 5px solid #1760a0;
           border-radius: 20px;
           height: 50%;
+          font-size: large;
+          text-align: left;
         }
 
 
@@ -99,7 +120,9 @@
         .acc-detail {
           text-align: left;
           font-weight: 400;
+          margin-bottom: 1em;
         }
+
 
       </style>
 
@@ -167,8 +190,6 @@
                       <h4 id="acc-detail-header">Account Details</h4>
                       <div class="acc-data">
                         <ul class="nav flex-column nav-pills" id="acc-details-list">
-                          <li class="acc-detail">Detail 1</a></li>
-                          <li class="acc-detail">Detail 2 </a></li>
                         </ul>
                       </div>
                     
@@ -185,12 +206,12 @@
 
                     <!-- Char has data loaded from JS for transactions-->
                     <div class="row">
-                      <!-- <canvas id="myChart" width="400px" height="400px"></canvas> -->
+                      <h4 id="summary-table-title">Loading Transactions</h4>
                     </div>
 
                     <!-- Display Transactions in Tabulated format -->
-                    <table id="summaryTable">
-                      <caption id="summaryTableCaption">Recent Transactions</caption>
+                    <table id="summary-table">
+                      <caption id="summary-table-caption">Recent Transactions</caption>
                       <thead id="summaryTableHead">
                         <tr>
                         <th>Date</th>

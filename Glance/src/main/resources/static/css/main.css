@@ -177,3 +177,35 @@ a.nav-link:hover {
   margin: 0 auto;
   text-align: right;
 }
+
+
+
+
+/*  Side Navbar in Overview html */
+	#acc-link-title {
+          text-align: center;
+          font-size: x-large;
+          line-height: inherit;
+
+          background-color: #1760a0;
+          border-bottom: 1px solid black;
+
+          width: max-content;
+          height: auto;
+          position: relative;
+          margin: 0;
+        }
+
+        /* our link back to overview */
+        #acc-link-title > a {
+          color: #fff;
+          text-decoration: none;
+
+        }
+
+        /* our link back to overview on hover */
+        #acc-link-title > a:hover {
+          color: #fff;
+          text-decoration: none;
+          font-weight: bold;
+        }

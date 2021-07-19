@@ -33,6 +33,7 @@ let getAccounts = async function() {
   }
 
   console.log(validAccts);
+  loadAccountList(validAccts);
 
   let dataset = [];
   let names = [];
@@ -86,4 +87,79 @@ let getAccounts = async function() {
                  );
 
 
+}
+
+
+//add acount links to a list in the overview page
+function loadAccountList(allAccounts) {
+	
+	accountLinks = [];
+    allAccounts.map( stringAcc => {
+        let acc = new Account(stringAcc);
+        accountLinks.push([
+            `/getAccount?plaidAccID=${acc.account_id}`,
+             `${acc.name}`
+            ]);
+        //need an onclick event to change the cookie
+    });
+    console.log("accountLinks array: " + accountLinks);
+    addAccountLinks(overviewURL, accountLinks);
+	
+}
+
+
+//add acount links to a list in the overview page
+async function addAccountLinks(accountsOverviewURL, accountLinks) {
+
+    //"Accounts" section header links back to overview
+    document.getElementById("accounts-overview-link").href = accountsOverviewURL;
+
+    //Each "Account k" links to that account page
+    let htmlList = document.getElementById("list-for-acc-links");
+    accountLinks.forEach(accLink => {
+        htmlList.innerHTML = htmlList.innerHTML +
+         `<li class="acc-link-list"><a href="accountDetails.html"
+          class="acc-link"
+          onClick=accDetailsOnClick(${accLink[0]})> 
+          ${accLink[1]}</a></li>`;
+    });
+}
+
+
+function Account(accString) {
+
+    this.account_id = pullValue(accString, accQuantities[0]);
+    this.availible = pullValue(accString, accQuantities[1]);
+    this.current = pullValue(accString, accQuantities[2]);
+    this.name = pullValue(accString, accQuantities[3]);
+    this.officialName = pullValue(accString, accQuantities[4]);
+    this.type = pullValue(accString, accQuantities[5]);
+    this.subtype = pullValue(accString, accQuantities[6]);
+}
+//END ACC CONSTRUCTOR
+
+
+//onlick function with parameters for sending user to different acc details pages
+function accDetailsOnClick(newAcc) {
+    document.cookie = `activeAccount=$newAcc`;
+}
+
+
+
+//Second pair of helper functions for "locating" element in the lengthly String
+function pullValue(plaidTx, quantity) {
+
+    //match quantity in plaidTx
+    //pull value out until we reach '\n'
+    let ex = `${quantity}.*\\n`
+    let regEx = new RegExp(ex, "g");
+    //console.log("Our regX: " + regEx);
+
+    //find match and cleanup
+    let temp = plaidTx.match(regEx);
+    temp[0] = temp[0].replace(new RegExp(`${quantity}`, "g"), "");
+
+    //return value
+    console.log("Returning: " + temp);
+    return temp[0];
 }

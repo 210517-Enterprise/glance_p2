@@ -42,6 +42,7 @@ function Transaction(date, merchantName, amount, categories, isPending) {
 function parseTransactions(list) {
     let viewables = [];
 
+    console.log("parsing transactions:\n\n");
     list.map( (plaidTx) => { viewables.push(new Transaction(
         pullValue(plaidTx, quantities[0]),
         pullValue(plaidTx, quantities[1]),
@@ -103,15 +104,15 @@ async function getDataOnLoad() {
 
     //Get Data for All accounts to get Names:
     let responseAllAccs = await fetch(overviewURL);
-    let allAcounts = await responseAllAccs.json();
+    let allAccounts = await responseAllAccs.json();
 
-    console.log(allAcounts);
+    console.log(allAccounts);
     //let accountsArr = allAcounts.split(",");
 
     
     //multi dim arrat contains [[accLink1, accName1], [accLink2...]]
     accountLinks = [];
-    allAcounts.map( stringAcc => {
+    allAccounts.map( stringAcc => {
         let acc = new Account(stringAcc);
         accountLinks.push([
             `/getAccount?plaidAccID=${acc.account_id}`,
@@ -124,23 +125,23 @@ async function getDataOnLoad() {
 
     
     //Get account details for THIS account
-    let accountURL = `/getAccount?`
+    let accountURL = "/getAccount";
     let responseAcc = await fetch(accountURL);
     let accountDetails = await responseAcc.json();
 
-    console.log("Single account data: " + accountDetails);
-    let accData = new Account(accountDetails);
+    console.log("Single account data: " + JSON.stringify(accountDetails));
+    let accData = new AccountJSON(accountDetails);
     buildAccDetails(accData);
     
     
     //Get account transactions for THIS account
-    let transactionURL = `/getTransactions`
+    let transactionURL = "/getTransactions";
     let responseTrans = await fetch(transactionURL);
     let trans = await responseTrans.json();
     console.log("Single transaction data: " + trans);
 
     let viewables = parseTransactions(trans);
-    console.log("MADE IT PAST PARSE TRANSACTIONS" + viewables);
+    //console.log("MADE IT PAST PARSE TRANSACTIONS" + viewables);
     buildTable(viewables);
     
 }
@@ -176,11 +177,6 @@ function accDetailsOnClick(newAcc) {
 
 /********* Builds Account details Section ************/
 
-const accQuantities = ["accountId: ", "available: ", "current: ", "name: ",
-         "officialName: ", "type: ", "subtype: "];
-
-const detailNames = ["Avalible Balance: ", "Current Balance: ", "Official Name: ", 
-        "Type: "];
 /*
     Constructor for Account consists of Mappings:
     plaid -> our Name,
@@ -205,35 +201,47 @@ function Account(accString) {
 }
 //END ACC CONSTRUCTOR
 
+function AccountJSON(accJSON) {
+
+    this.account_id = accJSON.accountId;
+    this.available = accJSON.balances.available;
+    this.current = accJSON.balances.current;
+    this.name = accJSON.name;
+    this.officialName = accJSON.officialName;
+    this.type = accJSON.type;
+    this.subtype = accJSON.subtype;
+}
+//END ACC CONSTRUCTOR
+
+const accQuantities = ["accountId: ", "available: ", "current: ", "name: ",
+         "officialName: ", "type: ", "subtype: "];
+
+const detailNames = ["Avalible Balance: ", "Current Balance: ", "Name: ", 
+        "Type: "];
+
 //build account details section from data
 function buildAccDetails(accData) {
     
     console.log("in buildACc details" + accData);
     let detailsList = document.getElementById("acc-details-list");
-    let values = accData.values();
+    let values = [];
+    Object.keys(accData).map(el => { values.push(accData[el]) });
 
     let k = 0;
     for (let i = 1; i < 5; i++) {
-        if(i === 3) { continue; }
+        if(i === 4) { continue; }
         detailsList.innerHTML = detailsList.innerHTML +
          `<li class="acc-detail"><strong>${detailNames[k++]}</strong> ${values[i]}</li>`;
     }
 
     //aggregate type and subtype
     detailsList.innerHTML = detailsList.innerHTML +
-         `<li class="acc-detail"><strong>${detailNames[k]}</strong> ${values[k+1]} - ${values[k+2]}</li>`;
+         `<li class="acc-detail"><strong>${detailNames[k]}</strong> ${values[k+2]} - ${values[k+3]}</li>`;
+
+
+    //Add official account name as title for summary table
+    document.getElementById("summary-table-title").innerHTML = values[4];
 }
-
-
-//Adds transactions to transactions list and builds chart
-function buildChart(transData) {
-    /*
-        Pie chart maps expenditures to individual categories
-    */
-
-
-}
-
 
 function buildTable(transData) {
     /*
@@ -242,7 +250,7 @@ function buildTable(transData) {
     */
    const maxTrans = 10;
     console.log("MADE IT INTO BUILD TABLE");
-   let table = document.getElementById("summaryTable");
+   let table = document.getElementById("summary-table");
     transData.forEach(data => {
         table.innerHTML = table.innerHTML +
          `<tr class="trans-table-row">
