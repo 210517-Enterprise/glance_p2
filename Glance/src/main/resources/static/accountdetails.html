@@ -68,16 +68,21 @@
         .acc-link-list {
           list-style-type: disc;
           margin-bottom: 1em;
+          text-align:left ;
         }
 
         /* we have a div explicitly for our navBar title and then this div which wraps 
             them both together and spans 2/3rds of its 3 row bootstrap collumn alotment*/
         .acc-link-wrapper {
-          width: min-content;
+          width: max-content;
           max-width: 80%;
           min-width: 66%;
+
           background-color: rgb(219, 216, 216);
           border: 2px solid #1760a0;
+          border-radius: 2px;
+          
+          text-align: left;
         }
 
 
@@ -161,7 +166,7 @@
 
                       <h4 id="acc-detail-header">Account Details</h4>
                       <div class="acc-data">
-                        <ul class="nav flex-column nav-pills">
+                        <ul class="nav flex-column nav-pills" id="acc-details-list">
                           <li class="acc-detail">Detail 1</a></li>
                           <li class="acc-detail">Detail 2 </a></li>
                         </ul>
@@ -180,7 +185,7 @@
 
                     <!-- Char has data loaded from JS for transactions-->
                     <div class="row">
-                      <canvas id="myChart" width="400px" height="400px"></canvas>
+                      <!-- <canvas id="myChart" width="400px" height="400px"></canvas> -->
                     </div>
 
                     <!-- Display Transactions in Tabulated format -->

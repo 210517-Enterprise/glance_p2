@@ -19,7 +19,7 @@ let sample = [
     "class Transaction {\n    transactionType: special\n    transactionId: 8X5oZy5mLXS9l5JwGwxVTKBg1Vn6MeTx5xZqn\n    accountOwner: null\n    pendingTransactionId: null\n    pending: false\n    paymentChannel: in store\n    paymentMeta: class PaymentMeta {\n        referenceNumber: null\n        ppdId: null\n        payee: null\n        byOrderOf: null\n        payer: null\n        paymentMethod: null\n        paymentProcessor: null\n        reason: null\n    }\n    name: Uber 072515 SF**POOL**\n    merchantName: Uber\n    location: class Location {\n        address: null\n        city: null\n        region: null\n        postalCode: null\n        country: null\n        lat: null\n        lon: null\n        storeNumber: null\n    }\n    authorizedDate: null\n    authorizedDatetime: null\n    date: 2021-06-22\n    datetime: null\n    categoryId: 22016000\n    category: [Travel, Taxi]\n    unofficialCurrencyCode: null\n    isoCurrencyCode: USD\n    amount: 6.33\n    accountId: bn5RyP5X4nhA1JEGBGwoh9pGmaMnG7IGMLKmX\n    transactionCode: null\n}"
 ]
 
-console.log("Viewables: \n" + parseTransactions(sample)[0]);
+//console.log("Viewables: \n" + parseTransactions(sample)[0]);
 
 /*
     Building function transaction:
@@ -69,7 +69,7 @@ function pullValue(plaidTx, quantity) {
     temp[0] = temp[0].replace(new RegExp(`${quantity}`, "g"), "");
 
     //return value
-    //console.log("Returning: " + temp);
+    console.log("Returning: " + temp);
     return temp[0];
 }
 
@@ -101,38 +101,48 @@ async function getDataOnLoad() {
     let overviewURL = `/getAccounts?${userID}`;
     console.log("url = " + overviewURL);
 
-    //Get Individual account links
-    let response = await fetch(overviewURL);
-    accounts = await response.json();
-    //console.log("All account data: " + accounts);
+    //Get Data for All accounts to get Names:
+    let responseAllAccs = await fetch(overviewURL);
+    let allAcounts = await responseAllAccs.json();
 
+    console.log(allAcounts);
+    //let accountsArr = allAcounts.split(",");
+
+    
     //multi dim arrat contains [[accLink1, accName1], [accLink2...]]
     accountLinks = [];
-    var num = 1;
-    accIDs.map( id => {
-        accountLinks.push([`/getAccount?plaidAccID=${id}`, `Account ${num++}`]);
+    allAcounts.map( stringAcc => {
+        let acc = new Account(stringAcc);
+        accountLinks.push([
+            `/getAccount?plaidAccID=${acc.account_id}`,
+             `${acc.name}`
+            ]);
         //need an onclick event to change the cookie
     });
     console.log("accountLinks array: " + accountLinks);
     addAccountLinks(overviewURL, accountLinks);
 
+    
     //Get account details for THIS account
-    let accountURL = `/getAccount?${activeAcc}`
+    let accountURL = `/getAccount?`
     let responseAcc = await fetch(accountURL);
     let accountDetails = await responseAcc.json();
+
     console.log("Single account data: " + accountDetails);
-    buildAccDetails(accountDetails);
+    let accData = new Account(accountDetails);
+    buildAccDetails(accData);
+    
     
     //Get account transactions for THIS account
     let transactionURL = `/getTransactions`
     let responseTrans = await fetch(transactionURL);
-    trans = await responseTrans.json();
+    let trans = await responseTrans.json();
     console.log("Single transaction data: " + trans);
 
-    viewables = parseTransactions(trans);
+    let viewables = parseTransactions(trans);
     console.log("MADE IT PAST PARSE TRANSACTIONS" + viewables);
-    //buildChart(viewables);
-    //buildTable(viewables);
+    buildTable(viewables);
+    
 }
 
 
@@ -163,8 +173,14 @@ function accDetailsOnClick(newAcc) {
 
 
 
-//Builds Account details Section
 
+/********* Builds Account details Section ************/
+
+const accQuantities = ["accountId: ", "available: ", "current: ", "name: ",
+         "officialName: ", "type: ", "subtype: "];
+
+const detailNames = ["Avalible Balance: ", "Current Balance: ", "Official Name: ", 
+        "Type: "];
 /*
     Constructor for Account consists of Mappings:
     plaid -> our Name,
@@ -176,27 +192,36 @@ function accDetailsOnClick(newAcc) {
     "name" -> "Account Name"
     "Official Name" -> "Account Official Name"
     "type" -> "Account Type"
-
-
 */
-const accQuantities = ["account_id: ", "balances: ", "balances: "]
 function Account(accString) {
 
     this.account_id = pullValue(accString, accQuantities[0]);
+    this.availible = pullValue(accString, accQuantities[1]);
+    this.current = pullValue(accString, accQuantities[2]);
+    this.name = pullValue(accString, accQuantities[3]);
+    this.officialName = pullValue(accString, accQuantities[4]);
+    this.type = pullValue(accString, accQuantities[5]);
+    this.subtype = pullValue(accString, accQuantities[6]);
 }
+//END ACC CONSTRUCTOR
 
-
+//build account details section from data
 function buildAccDetails(accData) {
     
     console.log("in buildACc details" + accData);
     let detailsList = document.getElementById("acc-details-list");
+    let values = accData.values();
 
-    accountLinks.for (const detail of accData) {
-        detailList.innerHTML = detailList.innerHTML +
-         `<li class="acc-detail">${detail}</li>`;
+    let k = 0;
+    for (let i = 1; i < 5; i++) {
+        if(i === 3) { continue; }
+        detailsList.innerHTML = detailsList.innerHTML +
+         `<li class="acc-detail"><strong>${detailNames[k++]}</strong> ${values[i]}</li>`;
     }
 
-
+    //aggregate type and subtype
+    detailsList.innerHTML = detailsList.innerHTML +
+         `<li class="acc-detail"><strong>${detailNames[k]}</strong> ${values[k+1]} - ${values[k+2]}</li>`;
 }
 
 

@@ -137,14 +137,18 @@ public class MainController {
 		
 		
 			try {
-				String foundAccount = userService.getAccount(activeAcc.getValue());
+				String foundAccount = '"' + userService.getAccount(activeAcc.getValue()) + '"';
+				  System.out.println("\n------------------------");
+				  System.out.println("RETURNING ACCOUNT: " + foundAccount);
+				  System.out.println("\n------------------------");
+				
 				return ResponseEntity.ok(foundAccount);
 			} catch (NoSuchTupleException e) {
 				//e.printStackTrace();
-				return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			} catch (PlaidException e) {
 				//e.printStackTrace();
-				return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			}
 		}
 	
@@ -188,8 +192,8 @@ public class MainController {
 		//isolates id from grand string by splitting it
 		accs.forEach(s -> accIDs.add(s.split(term)[1].split(delim)[0]));	
 		
-		System.out.println("Just the id: " + accIDs);
-		System.out.println("\n\n\n");
+		//System.out.println("Just the id: " + accIDs);
+		//System.out.println("\n\n\n");
 		return accIDs;
 	}
 
@@ -205,6 +209,12 @@ public class MainController {
 		
 		try {
 			List<String> transactions = userService.getTransactionsForAccount(activeAcc.getValue());
+			
+			  System.out.println("\n------------------------");
+			  System.out.println("RETURNING transaction: " + transactions);
+			  System.out.println("\n------------------------");
+			
+			
 			return ResponseEntity.ok(transactions);
 		} catch (NoSuchTupleException e) {
 			//e.printStackTrace();

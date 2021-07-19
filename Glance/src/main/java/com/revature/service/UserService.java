@@ -182,7 +182,6 @@ import com.revature.exceptions.*;
 			 for (AccountBase accountBase : accs) {
 				
 				 try {
-					
 					//save account info
 					Account a = new Account(accesstoken, accountBase.getAccountId(), u);
 					Account savedAcc = accRepo.save(a);
@@ -251,10 +250,16 @@ import com.revature.exceptions.*;
  	public String getAccount(String plaidID) throws NoSuchTupleException, PlaidException {
  		
  		Account a = accRepo.findAccountByPlaidKey(plaidID);
+ 		//System.out.println("id: " + plaidID + "  and accoutn returned " + a.getId());
+
  		
  		if(a != null) {
  			try {
 				AccountsGetResponse returnInfo = plaidUtil.getAccounts(a.getPlaidItem());
+				
+				if(returnInfo == null) {
+					throw new NoSuchTupleException("No plaid accounts foind with this key");
+				}
 				
 	 			for (AccountBase ab : returnInfo.getAccounts()) 
 	 			{
