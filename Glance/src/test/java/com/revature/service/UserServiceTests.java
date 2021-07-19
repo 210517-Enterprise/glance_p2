@@ -1,6 +1,9 @@
 package com.revature.service;
 
-import org.junit.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 //Project imports
 import com.revature.entities.*;
@@ -9,32 +12,50 @@ import com.revature.exceptions.*;
 
 
 //Mockito, JUNIT Imports
-import static org.mockito.Matchers.*;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import org.junit.*;
+import org.junit.runner.RunWith;
+import org.mindrot.jbcrypt.BCrypt;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 
 
+@SpringBootTest
 public class UserServiceTests {
 
+	
+	//Set up mocked values
+	@InjectMocks
+	UserService userService;
+	
+	@Mock
+	UserRepository mockUserRepo;
+	
+	@Mock
+	AccountRepository mockAccRepo;
+	
+	@Mock
+	GoalRepository mockGoalRepo;
+
+	User u;
+	Account a;
+	
+	@Autowired
+	public void setUserService(UserService uv) {
+		userService = uv;
+	}
 	
 	@Before
 	public void setUp() throws NoSuchTupleException 
 	{
+		MockitoAnnotations.initMocks(this);
+		
 		//create our user
-		/*
-		 * UserDAO udao= new UserDAO(); realU = udao.getUserByID(3); fakeU = new
-		 * User(10, "fake", "badpass", Role.CUS); mockU = mock(UserDAO.class);
-		 * ServiceView.userDAO = mockU;
-		 * 
-		 * //Create fake and real accounts AccountDAO adao = new AccountDAO(); realA =
-		 * adao.getAccountByID(1); fakeA = new Account(10, 10, 10, -5, false); mockA =
-		 * mock(AccountDAO.class); ServiceView.accntDAO = mockA;
-		 * 
-		 * sv = new CustomerView(realU, Role.CUS);
-		 */
+		u = new User("j@w.com", "password", "J", null, null, null, null);
 	}
 	
 	@After
@@ -67,13 +88,15 @@ public class UserServiceTests {
 	 * is returned from the method
 	 */
 	@Test
-	public void testRealEmailPassReturnsUser() {
+	public void testRealEmailPassReturnsUserTrue() throws InvalidPasswordException, NoSuchTupleException {
 		
 		//mock user Repo to return user wtih pass
+		when(mockUserRepo.findUserByEmail(u.getEmail())).thenReturn(u);
 		
 		//Mock Bcrypt to return true at checkpw
+		when(BCrypt.checkpw(u.getPassword(), u.getPassword())).thenReturn(true);
 		
-		assertTrue(true);
+		assertEquals(u, userService.login(u.getEmail(), u.getPassword()) );
 	}
 	
 	/*
