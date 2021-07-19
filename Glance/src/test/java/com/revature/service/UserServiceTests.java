@@ -23,7 +23,18 @@ public class UserServiceTests {
 	@Before
 	public void setUp() throws NoSuchTupleException 
 	{
-		//Setup our variables 
+		//create our user
+		/*
+		 * UserDAO udao= new UserDAO(); realU = udao.getUserByID(3); fakeU = new
+		 * User(10, "fake", "badpass", Role.CUS); mockU = mock(UserDAO.class);
+		 * ServiceView.userDAO = mockU;
+		 * 
+		 * //Create fake and real accounts AccountDAO adao = new AccountDAO(); realA =
+		 * adao.getAccountByID(1); fakeA = new Account(10, 10, 10, -5, false); mockA =
+		 * mock(AccountDAO.class); ServiceView.accntDAO = mockA;
+		 * 
+		 * sv = new CustomerView(realU, Role.CUS);
+		 */
 	}
 	
 	@After
@@ -57,6 +68,11 @@ public class UserServiceTests {
 	 */
 	@Test
 	public void testRealEmailPassReturnsUser() {
+		
+		//mock user Repo to return user wtih pass
+		
+		//Mock Bcrypt to return true at checkpw
+		
 		assertTrue(true);
 	}
 	
@@ -66,6 +82,9 @@ public class UserServiceTests {
 	 */
 	@Test
 	public void testBadEmailThrowsNoSuchTupleException() {
+		
+		//mock user Repo to return null
+		
 		assertTrue(true);
 	}
 	

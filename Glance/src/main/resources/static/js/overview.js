@@ -96,13 +96,10 @@ function loadAccountList(allAccounts) {
 	accountLinks = [];
     allAccounts.map( stringAcc => {
         let acc = new Account(stringAcc);
-        accountLinks.push([
-            `/getAccount?plaidAccID=${acc.account_id}`,
-             `${acc.name}`
-            ]);
+       accountLinks.push([acc.account_id, acc.name]);
         //need an onclick event to change the cookie
     });
-    console.log("accountLinks array: " + accountLinks);
+    //console.log("accountLinks array: " + accountLinks);
 	let overviewURL = "/overview.html";
     addAccountLinks(overviewURL, accountLinks);
 	
@@ -112,13 +109,12 @@ function loadAccountList(allAccounts) {
 //add acount links to a list in the overview page
 async function addAccountLinks(accountsOverviewURL, accountLinks) {
 
-    //Each "Account k" links to that account page
     let htmlList = document.getElementById("list-for-acc-links");
     accountLinks.forEach(accLink => {
         htmlList.innerHTML = htmlList.innerHTML +
-         `<li class="acc-link-list"><a href="accountDetails.html"
+         `<li class="acc-link-list"><a href="/accountDetails.html" 
           class="acc-link"
-          onClick=accDetailsOnClick(${accLink[0]})> 
+          onclick="accDetailsOnClick('${accLink[0]}')"> 
           ${accLink[1]}</a></li>`;
     });
 }
@@ -144,10 +140,19 @@ function Account(accString) {
 
 
 //onlick function with parameters for sending user to different acc details pages
+//onlick function with parameters for sending user to different acc details pages
 function accDetailsOnClick(newAcc) {
-    document.cookie = `activeAccount=$newAcc`;
-}
+    //console.log("Setting cookie with new val: " + newAcc);
+    document.cookie = `activeAccount=${newAcc}`;
 
+    let params = document.cookie.split("; ");
+    const userID = params[0];
+    const  isLogged = params[1];
+    const  accIDs = params[2].split("accounts=")[1].split("---");
+    const activeAcc = params[3];
+
+    console.log("New cookie val: " + newAcc);
+}
 
 
 //Second pair of helper functions for "locating" element in the lengthly String
@@ -162,8 +167,9 @@ function pullValue(plaidTx, quantity) {
     //find match and cleanup
     let temp = plaidTx.match(regEx);
     temp[0] = temp[0].replace(new RegExp(`${quantity}`, "g"), "");
+	temp[0] = temp[0].replace(new RegExp('\n', "g"), "");
 
     //return value
-    console.log("Returning: " + temp);
+    //console.log("Returning: " + temp);
     return temp[0];
 }

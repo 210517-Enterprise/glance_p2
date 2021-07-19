@@ -68,9 +68,10 @@ function pullValue(plaidTx, quantity) {
     //find match and cleanup
     let temp = plaidTx.match(regEx);
     temp[0] = temp[0].replace(new RegExp(`${quantity}`, "g"), "");
+    temp[0] = temp[0].replace(new RegExp('\n', "g"), "");
 
     //return value
-    console.log("Returning: " + temp);
+    //console.log("Returning: " + temp);
     return temp[0];
 }
 
@@ -94,16 +95,18 @@ async function getDataOnLoad() {
     const userID = params[0];
     const  isLogged = params[1];
     const  accIDs = params[2].split("accounts=")[1].split("---");
-    const activeAcc = params[3];
+    const activeAcc = params[3].split("activeAccount=")[1];
     const accessToken = params[4];
 
+    console.log("activeAcc in cookie= " + activeAcc);
 
     //Get Account Overview page link
-    let overviewURL = `/overview.html`;
+    let  overviewURL = `/overview.html`;
+    let getAccountsURL = `/getAccounts?${userID}`;
     console.log("url = " + overviewURL);
 
     //Get Data for All accounts to get Names:
-    let responseAllAccs = await fetch(overviewURL);
+    let responseAllAccs = await fetch(getAccountsURL);
     let allAccounts = await responseAllAccs.json();
 
 
@@ -123,13 +126,10 @@ async function getDataOnLoad() {
     accountLinks = [];
     validAccts.map( stringAcc => {
         let acc = new Account(stringAcc);
-        accountLinks.push([
-            `/getAccount?plaidAccID=${acc.account_id}`,
-             `${acc.name}`
-            ]);
+        accountLinks.push([acc.account_id, acc.name]);
         //need an onclick event to change the cookie
     });
-    console.log("accountLinks array: " + accountLinks);
+    //console.log("accountLinks array: " + accountLinks);
     addAccountLinks(overviewURL, accountLinks);
 
     
@@ -138,7 +138,7 @@ async function getDataOnLoad() {
     let responseAcc = await fetch(accountURL);
     let accountDetails = await responseAcc.json();
 
-    console.log("Single account data: " + JSON.stringify(accountDetails));
+    //console.log("Single account data: " + JSON.stringify(accountDetails));
     let accData = new AccountJSON(accountDetails);
     buildAccDetails(accData);
     
@@ -169,16 +169,25 @@ async function addAccountLinks(accountsOverviewURL, accountLinks) {
     let htmlList = document.getElementById("list-for-acc-links");
     accountLinks.forEach(accLink => {
         htmlList.innerHTML = htmlList.innerHTML +
-         `<li class="acc-link-list"><a href="accountDetails.html"
+         `<li class="acc-link-list"><a href="/accountDetails.html" 
           class="acc-link"
-          onClick=accDetailsOnClick(${accLink[0]})> 
+          onclick="accDetailsOnClick('${accLink[0]}')"> 
           ${accLink[1]}</a></li>`;
     });
 }
 
 //onlick function with parameters for sending user to different acc details pages
 function accDetailsOnClick(newAcc) {
-    document.cookie = `activeAccount=$newAcc`;
+    //console.log("Setting cookie with new val: " + newAcc);
+    document.cookie = `activeAccount=${newAcc}`;
+
+    let params = document.cookie.split("; ");
+    const userID = params[0];
+    const  isLogged = params[1];
+    const  accIDs = params[2].split("accounts=")[1].split("---");
+    const activeAcc = params[3];
+
+    console.log("New cookie val: " + activeAcc);
 }
 
 

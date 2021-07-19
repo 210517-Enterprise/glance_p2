@@ -117,7 +117,7 @@ public class MainController {
 	@GetMapping(value="/addAccount")
 	public @ResponseBody ResponseEntity<Account> addAccount(@RequestParam int userId, @RequestParam String plaidAccessToken) {
 		
-		System.out.println("User ID: " + " " + userId + "AccessToken: " + plaidAccessToken);
+		//System.out.println("User ID: " + " " + userId + "AccessToken: " + plaidAccessToken);
 		try {
 			userService.addAccounts(userId, plaidAccessToken);
 			return new ResponseEntity<Account>(HttpStatus.OK);
@@ -201,9 +201,6 @@ public class MainController {
 		return accIDs;
 	}
 
-	private String escapeNewLines(String badString) {
-		return badString.replace("\n", "\\n");
-	}
 	
 	/**
 	 * Returns the list of transactions associated with a singular account for a user as a list of strings to be parsed and displayed within the front end. 
@@ -280,7 +277,7 @@ public class MainController {
 		Cookie userIsLoggedInCookie = new Cookie(userIsLoggedInCOOKIE, userIsLoggedInCookieValue);
 		Cookie userIdCookie = new Cookie(userIdNameCOOKIE, userIdCookieValue);
 		Cookie accounts = new Cookie(accountsCOOKIE, "");
-		Cookie activeAccount = new Cookie(activeAccountCOOKIE, "qBxX33VrbMHknnnKdkVEckMWP6BGoGUJpyy5m");
+		Cookie activeAccount = new Cookie(activeAccountCOOKIE, "");
 		
 		Cookie[] arr = new Cookie[] {userIdCookie, userIsLoggedInCookie, accounts, activeAccount};
 		
