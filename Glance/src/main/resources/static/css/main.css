@@ -182,20 +182,7 @@ a.nav-link:hover {
 
 
 /*  Side Navbar in Overview html */
-	#acc-link-title {
-          text-align: center;
-          font-size: x-large;
-          line-height: inherit;
-
-          background-color: #1760a0;
-          border-bottom: 1px solid black;
-
-          width: max-content;
-          height: auto;
-          position: relative;
-          margin: 0;
-        }
-
+	
         /* our link back to overview */
         #acc-link-title > a {
           color: #fff;

@@ -103,6 +103,7 @@ function loadAccountList(allAccounts) {
         //need an onclick event to change the cookie
     });
     console.log("accountLinks array: " + accountLinks);
+	let overviewURL = "/overview.html";
     addAccountLinks(overviewURL, accountLinks);
 	
 }
@@ -110,9 +111,6 @@ function loadAccountList(allAccounts) {
 
 //add acount links to a list in the overview page
 async function addAccountLinks(accountsOverviewURL, accountLinks) {
-
-    //"Accounts" section header links back to overview
-    document.getElementById("accounts-overview-link").href = accountsOverviewURL;
 
     //Each "Account k" links to that account page
     let htmlList = document.getElementById("list-for-acc-links");
@@ -125,6 +123,12 @@ async function addAccountLinks(accountsOverviewURL, accountLinks) {
     });
 }
 
+
+const accQuantities = ["accountId: ", "available: ", "current: ", "name: ",
+         "officialName: ", "type: ", "subtype: "];
+
+const detailNames = ["Avalible Balance: ", "Current Balance: ", "Name: ", 
+        "Type: "];
 
 function Account(accString) {
 

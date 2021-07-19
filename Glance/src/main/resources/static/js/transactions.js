@@ -99,12 +99,21 @@ async function getDataOnLoad() {
 
 
     //Get Account Overview page link
-    let overviewURL = `/getAccounts?${userID}`;
+    let overviewURL = `/overview.html`;
     console.log("url = " + overviewURL);
 
     //Get Data for All accounts to get Names:
     let responseAllAccs = await fetch(overviewURL);
     let allAccounts = await responseAllAccs.json();
+
+
+    let validAccts = [];
+    for (let i = 0; i < allAccounts.length; i++) {
+        if(allAccounts[i].match(/depository/g) != null) {
+        validAccts.push(allAccounts[i]);
+        }
+    }
+
 
     console.log(allAccounts);
     //let accountsArr = allAcounts.split(",");
@@ -112,7 +121,7 @@ async function getDataOnLoad() {
     
     //multi dim arrat contains [[accLink1, accName1], [accLink2...]]
     accountLinks = [];
-    allAccounts.map( stringAcc => {
+    validAccts.map( stringAcc => {
         let acc = new Account(stringAcc);
         accountLinks.push([
             `/getAccount?plaidAccID=${acc.account_id}`,
